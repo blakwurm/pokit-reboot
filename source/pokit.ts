@@ -71,7 +71,7 @@ export class PokitOS {
   async tick(engine: PokitOS) {
     engine.time = await this.getTime();
     while(engine.time!.pending >= engine.time!.interval) {
-      engine.ecs.update();
+      await engine.ecs.update();
       engine.time!.pending -= engine.time!.interval;
     }
     engine.renderer.render();
