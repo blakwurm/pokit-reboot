@@ -43,6 +43,7 @@ export class PokitOS {
   }
 
   async start() {
+    this.time = await this.getTime();
     this.requestFrame();
   }
 
@@ -63,12 +64,12 @@ export class PokitOS {
   }
 
   async requestFrame() {
-    this.time = await this.getTime();
     let that = this;
     requestAnimationFrame(()=> this.tick(that));
   }
 
   async tick(engine: PokitOS) {
+    engine.time = await this.getTime();
     while(engine.time!.pending >= engine.time!.interval) {
       engine.ecs.update();
       engine.time!.pending -= engine.time!.interval;
