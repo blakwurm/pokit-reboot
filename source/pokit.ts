@@ -45,6 +45,7 @@ export class PokitOS {
   async start() {
     this.time = await this.getTime();
     this.requestFrame();
+    await this.tick();
   }
 
   async makeTime(): Promise<Time> {
@@ -64,16 +65,18 @@ export class PokitOS {
   }
 
   async requestFrame() {
-    let that = this;
-    requestAnimationFrame(()=> this.tick(that));
+    requestAnimationFrame(()=>{
+      this.renderer.render();
+      this.requestFrame();
+    });
   }
 
-  async tick(engine: PokitOS) {
-    engine.time = await this.getTime();
-    while(engine.time!.pending >= engine.time!.interval) {
-      await engine.ecs.update();
-      engine.time!.pending -= engine.time!.interval;
+  async tick() {
+    this.time = await this.getTime();
+    while(this.time.pending >= this.time.interval) {
+      await this.ecs.update();
+      this.time.pending -= this.time.interval;
     }
-    engine.renderer.render();
+    setTimeout(()=>this.tick(), this.time.interval - (performance.now()-this.time.prev) - this.time.pending)
   }
 }
