@@ -76,6 +76,7 @@ export class PokitOS {
     let t = this.time || await this.makeTime();
     t.delta = performance.now() - t.prev;
     t.pending += t.delta;
+    t.prev = performance.now();
     return t;
   }
 
