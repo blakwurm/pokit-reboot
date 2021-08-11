@@ -1,4 +1,4 @@
-class ECS {
+export class ECS {
   async update() {
 
   }

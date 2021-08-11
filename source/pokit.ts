@@ -1,4 +1,5 @@
-import { Jewls } from "./jewls";
+import { Jewls } from "./jewls.js";
+import { ECS } from "./ecs.js";
 
 interface Time {
   prev: number;
@@ -26,6 +27,18 @@ export interface Renderer {
 export interface StartOpts {
   fps?: number;
   renderer?: Renderer;
+  cullFunc?: CullingFunction;
+}
+export interface Vector {
+  x: number,
+  y: number
+}
+export interface Identity {
+  id: string;
+  parent?: Identity;
+  position: Vector;
+  scale: Vector;
+  rotation: Vector
 }
 
 export class PokitOS {
@@ -34,12 +47,14 @@ export class PokitOS {
   fps: number;
   ecs: ECS;
   renderer: Renderer;
+  cullFunc?: CullingFunction;
 
   constructor(opts?: StartOpts) {
     opts = opts || {};
     this.fps = opts.fps || 60;
     this.ecs = new ECS();
     this.renderer = opts.renderer || new Jewls();
+    this.cullFunc = opts.cullFunc;
   }
 
   async start() {
@@ -66,7 +81,8 @@ export class PokitOS {
 
   async requestFrame() {
     requestAnimationFrame(()=>{
-      this.renderer.render();
+      this.renderer.render(this.cullFunc);
+      console.log("Render");
       this.requestFrame();
     });
   }
@@ -75,6 +91,7 @@ export class PokitOS {
     this.time = await this.getTime();
     while(this.time.pending >= this.time.interval) {
       await this.ecs.update();
+      console.log("Update", this.time.delta);
       this.time.pending -= this.time.interval;
     }
     setTimeout(()=>this.tick(), this.time.interval - (performance.now()-this.time.prev) - this.time.pending)

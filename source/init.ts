@@ -1,4 +1,4 @@
-import { PokitOS } from "./pokit";
+import { PokitOS } from "./pokit.js";
 
 declare global {
   interface Window { Pokit: PokitOS }
@@ -22,3 +22,5 @@ async function setup_console_open() {
       }
   } );
 }
+
+main();
