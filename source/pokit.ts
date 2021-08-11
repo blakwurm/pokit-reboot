@@ -51,7 +51,7 @@ export class PokitOS {
 
   constructor(opts?: StartOpts) {
     opts = opts || {};
-    this.fps = opts.fps || 60;
+    this.fps = opts.fps || 30;
     this.ecs = new ECS();
     this.renderer = opts.renderer || new Jewls();
     this.cullFunc = opts.cullFunc;
