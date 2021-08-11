@@ -1,0 +1,53 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+
+  <title>The Pokit3 Handheld Game Console</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="/css/main.css">
+  <script src="/js/lib/screenful/min.js"></script>
+</head>
+
+<body>
+  <canvas id="gamescreen" height="320" width="320"></canvas>
+  <div id="controls">
+       <div id="dpad" class="buttongroup">
+         <button id="pad-left" name="left"></button>
+         <button id="pad-up" name="up"></button>
+         <button id="pad-down" name="down"></button>
+         <button id="pad-right" name="right"></button>
+       </div>
+       </div>
+       <div id="startselect" class="buttongroup">
+         <button id="startbutton" name="start">START</button>
+         <button id="selectbutton" name="select">SELECT</button>
+       </div>
+       <div id="rightbuttons" class="buttongroup">
+         <button id="ybutton" name="y">Y</button>
+         <button id="xbutton" name="x">X</button>
+         <button id="bbutton" name="b">B</button>
+         <button id="abutton" name="a">A</button>
+       </div>
+       <div id="metabuttons" class="buttongroup">
+         <button id="fullscreen">
+           Fullscreen
+         </button>
+       </div>
+       <div id="powercase_right" class="active"></div>
+       <div id="powercase_left" class="active">
+           <button id="onbutton"></button> 
+       </div>
+  </div>
+  <div id="debug_point"></div>
+  <div id="cart_slot"></div>
+  <!-- <script type="module" src="/js/init.mjs"> -->
+    <script type="module">
+        import main from '/js/init.js'    
+        main()
+    </script>
+  </script>
+</body>
+</html>
