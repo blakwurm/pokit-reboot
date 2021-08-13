@@ -83,7 +83,6 @@ export class PokitOS {
   async requestFrame() {
     requestAnimationFrame(()=>{
       this.renderer.render(this.cullFunc);
-      console.log("Render");
       this.requestFrame();
     });
   }
