@@ -92,9 +92,8 @@ export class PokitOS {
     this.time = await this.getTime();
     while(this.time.pending >= this.time.interval) {
       await this.ecs.update();
-      console.log("Update", this.time.delta);
       this.time.pending -= this.time.interval;
     }
-    setTimeout(()=>this.tick(), this.time.interval - (performance.now()-this.time.prev) - this.time.pending)
+    setTimeout(()=>this.tick(), 0);
   }
 }
