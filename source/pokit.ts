@@ -38,8 +38,16 @@ export interface Identity {
   parent?: Identity;
   position: Vector;
   scale: Vector;
-  rotation: Vector
+  rotation: number;
 }
+export interface IJsonSerializableObject {
+	[index: string] : IJsonTypes,
+	[index: number] : IJsonTypes
+}
+
+export type IJsonPrimitives = string | number | boolean | null
+export type IJsonTypes = IJsonPrimitives | Array<IJsonPrimitives> | IJsonSerializableObject
+
 
 export class PokitOS {
   
