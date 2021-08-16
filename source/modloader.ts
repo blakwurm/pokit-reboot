@@ -1,11 +1,7 @@
 import { PokitOS } from "./pokit.js";
 
-let tasks: Promise<void>[] = [];
-
-export default async function loadModule(cartPath: string, modules: string[]) {
-  for(let uri of modules) {
-    tasks.push(loadSingle(cartPath, uri));
-  }
+export default async function loadModules(cartPath: string, modules: string[]) {
+  let tasks = modules.map((uri)=>loadSingle(cartPath, uri));
   return new Promise<void>(async (resolve)=>{
     for(let task of tasks) await task;
     resolve();
