@@ -29,13 +29,13 @@ export class ECS {
     for(let sys of this.sorted) {
       if(!sys.update) continue;
       if(sys.defaultComponent) {
-        let arr = Array.from(this.scene.subscriptions.get(sys.defaultComponent)!);
+        let arr = [...this.scene.subscriptions.get(sys.defaultComponent)!];
         for(let e of arr) {
           await sys.update(e);
         }
         continue;
       }
-      let arr = Array.from(this.scene.entities.values());
+      let arr = [...this.scene.entities.values()];
       await sys.update(arr);
     }
   }
