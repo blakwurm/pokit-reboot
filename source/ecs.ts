@@ -57,6 +57,6 @@ export class ECS {
         this.sorted.push(v);
       }
     }
-    this.sorted.sort((a, b) => b.priority! - b.priority!);
+    this.sorted.sort((a, b) => b.priority! - a.priority!);
   }
 }
