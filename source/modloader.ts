@@ -1,32 +1,93 @@
+import main from "./init.js";
 import { PokitOS } from "./pokit.js";
 
-export default async function loadModules(cartPath: string, modules: string[]) {
-  let tasks = modules.map((uri)=>loadSingle(cartPath, uri));
-  return new Promise<void>(async (resolve)=>{
-    for(let task of tasks) await task;
-    resolve();
-  });
-}
+export class ModLoader extends Map<string, Object>{
+  cartPath = "";
+  handlers: Map<string, any[]>;
 
-async function loadSingle(cartPath: string, uri: string) {
-  let path = getPath(cartPath, uri);
-  await import(path);
-}
-
-function getPath(cartPath: string, uri: string) {
-  if(uri.startsWith("@")) {
-    let tokens = uri.substr(1).split(":");
-    return resolveModule(tokens[0], tokens[1]);
+  constructor() {
+    super();
+    this.handlers = new Map<string, Function[]>();
   }
 
-  return cartPath+"/modules/"+uri+"/main.js";
+  get<T>(name:string): T {
+    return <T>super.get(name);
+  }
+
+  registerEvent(evt: string, handler: Function) {
+    if(!this.handlers.has(evt)) this.handlers.set(evt, []);
+    this.handlers.get(evt)!.push(handler);
+  }
+  
+  async callEvent(evt: string) {
+    if(this.handlers.has(evt)) {
+      for(let handler of this.handlers.get(evt)!) {
+        await handler();
+      }
+    }
+  }
+
+  async loadModules(cartPath: string, uris: string[]) {
+    this.cartPath = cartPath;
+    let tasks = uris.map((uri)=>this.loadSingle(uri));
+    return new Promise<void>(async (resolve)=>{
+      for(let task of tasks) await task;
+      console.log(this.handlers);
+      resolve();
+    });
+  }
+
+  private async loadSingle(uri: string) {
+    let path = this.getPath(uri);
+    await import(path);
+  }
+
+  private getPath(uri: string) {
+    if(uri.startsWith("@")) {
+      let tokens = uri.substr(1).split(":");
+      return this.resolveModule(tokens[0], tokens[1]);
+    }
+
+    return this.cartPath+"/modules/"+uri+"/main.js";
+  }
+
+  private resolveModule(provider: string, module: string) {
+    let path = "";
+    switch(provider.toLowerCase()) {
+      case "pokit":
+        return "./modules/"+module+"/main.js";
+    }
+    return path;
+  }
 }
 
-function resolveModule(provider: string, module: string) {
-  let path = "";
-  switch(provider.toLowerCase()) {
-    case "pokit":
-      return "./modules/"+module+"/main.js";
+interface ModuleConstructor {
+  new(engine: PokitOS): Object;
+}
+
+interface Anon {
+  [key: string]: any;
+}
+
+export function module(name?: string) {
+  return function(ctr: ModuleConstructor) {
+    name = name || ctr.name;
+    let inst = new ctr(window.Pokit);
+    window.Pokit.modules.set(name, inst);
+    if(ctr.prototype.__pokitevents) {
+      for(let evt in ctr.prototype.__pokitevents) {
+        let func = ctr.prototype.__pokitevents[evt].bind(inst);
+        window.Pokit.modules.registerEvent(evt, func);
+      }
+    }
   }
-  return path;
+}
+
+export function handler(name?: string) {
+  return function(target: any, propertyName: string, descriptor: TypedPropertyDescriptor<()=>Promise<void>>) {
+    name = name || propertyName;
+    let proto = target.constructor.prototype;
+    if(!proto.__pokitevents) proto.__pokitevents = {};
+    (<Anon>proto.__pokitevents)[name] = target[propertyName];
+  }
 }
