@@ -17,13 +17,14 @@ export class Scene {
   subscribeEntity(component: string, entity: Entity) {
     if(!this.subscriptions.has(component)) {
       this.subscriptions.set(component, new Set<Entity>())
-      this.ecs.sortSystems();
     }
 
     let e = this.subscriptions.get(component)!;
     if(!e.has(entity)) {
       e.add(entity)
-      this.subscriptions.set(component, e);
+      if(this.ecs.scene == this) {
+        this.ecs.callEventSingle("init", entity, component);
+      }
     }
   }
 

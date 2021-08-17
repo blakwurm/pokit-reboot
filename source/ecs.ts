@@ -40,6 +40,21 @@ export class ECS {
     }
   }
 
+  async callEventSingle(evt: string, e: Entity, component?: string) {
+    let sorted = component ? this.sorted.filter((x)=> {
+      x.defaultComponent===undefined || x.defaultComponent==component 
+    }) : this.sorted;
+    
+    for(let sys of sorted) {
+      if(!(<any>sys)[evt]) continue;
+      if(sys.defaultComponent && e.has(sys.defaultComponent)) {
+        await (<any>sys)[evt](e);
+        continue;
+      }
+      await (<any>sys)[evt]([e]);
+    }
+  }
+
   public registerSystem(name: string, system: System) {
     if(!system.priority)system.priority = 0;
     this.systems.set(name, system);
