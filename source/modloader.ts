@@ -69,7 +69,19 @@ interface Anon {
   [key: string]: any;
 }
 
-export function module(name?: string) {
+export function module() {
+  return function(ctr: ModuleConstructor) {
+    let inst = new ctr(window.Pokit);
+    if(ctr.prototype.__pokitevents) {
+      for(let evt in ctr.prototype.__pokitevents) {
+        let func = ctr.prototype.__pokitevents[evt].bind(inst);
+        window.Pokit.modules.registerEvent(evt, func);
+      }
+    }
+  }
+}
+
+export function api(name?: string) {
   return function(ctr: ModuleConstructor) {
     name = name || ctr.name;
     let inst = new ctr(window.Pokit);
