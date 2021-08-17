@@ -1,5 +1,6 @@
 import { Jewls } from "./jewls.js";
 import { ECS } from "./ecs.js";
+import { ModLoader } from "./modloader.js";
 
 interface Time {
   prev: number;
@@ -55,6 +56,7 @@ export class PokitOS {
   fps: number;
   ecs: ECS;
   renderer: Renderer;
+  modules: ModLoader;
   cullFunc?: CullingFunction;
 
   constructor(opts?: StartOpts) {
@@ -62,6 +64,7 @@ export class PokitOS {
     this.fps = opts.fps || 30;
     this.ecs = new ECS();
     this.renderer = opts.renderer || new Jewls();
+    this.modules = new ModLoader();
     this.cullFunc = opts.cullFunc;
   }
 
