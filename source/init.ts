@@ -8,7 +8,7 @@ export default async function main() {
   let engine = new PokitOS();
   window.Pokit = engine;
 
-  await engine.modules.loadModules("", []);
+  await engine.modules.loadModules("", ["@pokit:Test"]);
   await setup_console_open();
   engine.start();
 }
