@@ -70,6 +70,7 @@ export class PokitOS {
 
   async start() {
     this.time = await this.getTime();
+    await this.modules.callEvent("awake");
     this.requestFrame();
     await this.tick();
   }
@@ -92,8 +93,10 @@ export class PokitOS {
   }
 
   async requestFrame() {
-    requestAnimationFrame(()=>{
+    requestAnimationFrame(async ()=>{
+      await this.modules.callEvent("preRender");
       this.renderer.render(this.cullFunc);
+      await this.modules.callEvent("postRender");
       this.requestFrame();
     });
   }
@@ -101,8 +104,10 @@ export class PokitOS {
   async tick() {
     this.time = await this.getTime();
     while(this.time.pending >= this.time.interval) {
+      await this.modules.callEvent("preUpdate");
       await this.ecs.update();
       this.time.pending -= this.time.interval;
+      await this.modules.callEvent("postUpdate");
     }
     setTimeout(()=>this.tick(), 0);
   }

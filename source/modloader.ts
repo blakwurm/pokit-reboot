@@ -19,10 +19,10 @@ export class ModLoader extends Map<string, Object>{
     this.handlers.get(evt)!.push(handler);
   }
   
-  async callEvent(evt: string) {
+  async callEvent(evt: string, ...args: any[]) {
     if(this.handlers.has(evt)) {
       for(let handler of this.handlers.get(evt)!) {
-        await handler();
+        await handler(...args);
       }
     }
   }
@@ -32,7 +32,7 @@ export class ModLoader extends Map<string, Object>{
     let tasks = uris.map((uri)=>this.loadSingle(uri));
     return new Promise<void>(async (resolve)=>{
       for(let task of tasks) await task;
-      console.log(this.handlers);
+      await this.callEvent("postLoad");
       resolve();
     });
   }
@@ -84,7 +84,7 @@ export function module(name?: string) {
 }
 
 export function handler(name?: string) {
-  return function(target: any, propertyName: string, descriptor: TypedPropertyDescriptor<()=>Promise<void>>) {
+  return function(target: any, propertyName: string, descriptor: TypedPropertyDescriptor<(...args:any[])=>Promise<void>>) {
     name = name || propertyName;
     let proto = target.constructor.prototype;
     if(!proto.__pokitevents) proto.__pokitevents = {};
