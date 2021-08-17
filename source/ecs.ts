@@ -25,18 +25,18 @@ export class ECS {
     this.sorted = [];
   }
 
-  async update() {
+  async callEvent(evt: string) {
     for(let sys of this.sorted) {
-      if(!sys.update) continue;
+      if(!(<any>sys)[evt]) continue;
       if(sys.defaultComponent) {
         let arr = [...this.scene.subscriptions.get(sys.defaultComponent)!];
         for(let e of arr) {
-          await sys.update(e);
+          await (<any>sys)[evt](e);
         }
         continue;
       }
       let arr = [...this.scene.entities.values()];
-      await sys.update(arr);
+      await (<any>sys)[evt](arr);
     }
   }
 

@@ -105,7 +105,7 @@ export class PokitOS {
     this.time = await this.getTime();
     while(this.time.pending >= this.time.interval) {
       await this.modules.callEvent("preUpdate");
-      await this.ecs.update();
+      await this.ecs.callEvent("update");
       this.time.pending -= this.time.interval;
       await this.modules.callEvent("postUpdate");
     }
