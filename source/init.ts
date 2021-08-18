@@ -17,12 +17,15 @@ export default async function main() {
   engine.cartPath = cartPath;
   engine.cart = manifest;
 
+  let scene;
   if(manifest.defaultScene) {
-    engine.ecs.loadScene(manifest.defaultScene);
+    scene = await engine.ecs.loadScene(manifest.defaultScene);
   }
 
   await setup_console_open();
-  engine.start();
+  await engine.start();
+
+  if(scene) engine.ecs.transition(scene);
 }
 
 async function setup_console_open() {
