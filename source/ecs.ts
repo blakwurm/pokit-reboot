@@ -85,7 +85,7 @@ export class ECS {
     let base = {};
     while(lineage.length) {
       let stub = cart.entities[lineage.pop()!];
-      deepMergeNoConcat(base, stub)
+      base = deepMergeNoConcat(base, stub)
     }
     return base as EntityStub;
   }
@@ -99,6 +99,7 @@ export class ECS {
       ident = <Identity>deepMerge(ident, sStub.entities[e]);
       let entity = scene.makeEntity(ident);
       for(let c in eStub.components) {
+        if(c == 'identity') continue;
         entity.set(c, eStub.components[c]);
       }
     }

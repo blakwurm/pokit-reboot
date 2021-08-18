@@ -11,6 +11,6 @@ class Move {
   public priority = 0;
 
   async update(entity: Entity) {
-
+    console.log("Wee!");
   }
 }

@@ -1,6 +1,6 @@
-import { Identity, Vector } from "./pokit";
-import { Scene } from "./scene";
-import { deepMerge, deepMergeNoConcat } from "./utils";
+import { Identity, Vector } from "./pokit.js";
+import { Scene } from "./scene.js";
+import { deepMerge, deepMergeNoConcat } from "./utils.js";
 
 const VectorZero = {
   x: 0,
