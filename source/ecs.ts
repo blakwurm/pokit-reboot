@@ -103,6 +103,7 @@ export class ECS {
         entity.set(c, eStub.components[c]);
       }
     }
+    return scene;
   }
 
   public async transition(scene: Scene) {
