@@ -1,5 +1,6 @@
 import { Identity, Vector } from "./pokit";
 import { Scene } from "./scene";
+import { deepMerge, deepMergeNoConcat } from "./utils";
 
 const VectorZero = {
   x: 0,
@@ -47,14 +48,15 @@ export class Entity extends Map<string, any> implements Identity {
     this.scale = VectorOne;
     this.rotation = 0;
 
-    Object.assign(this, ident);
+    let i = deepMerge(this, ident);
+    Object.assign(this, i);
 
     super.set("identity", this);
   }
 
   public set(component: string, opts: any) {
-    let data = Object.assign({}, this.scene.ecs.components.get(component));
-    
+    let data = deepMergeNoConcat({}, this.scene.ecs.components.get(component), opts);
+
     super.set(component, data);
     this.scene.subscribeEntity(component, this);
     

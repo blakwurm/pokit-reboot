@@ -1,6 +1,7 @@
 import { Jewls } from "./jewls.js";
 import { ECS } from "./ecs.js";
 import { ModLoader } from "./modloader.js";
+import { CartManifest } from "./cartloader.js";
 
 interface Time {
   prev: number;
@@ -51,7 +52,8 @@ export type IJsonTypes = IJsonPrimitives | Array<IJsonPrimitives> | IJsonSeriali
 
 
 export class PokitOS {
-  
+  cart?: CartManifest;
+  cartPath?: string;
   time?: Time;
   fps: number;
   ecs: ECS;

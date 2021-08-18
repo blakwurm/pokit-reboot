@@ -5,12 +5,14 @@ import { Identity, IJsonSerializableObject } from "./pokit.js";
 export class Scene {
   subscriptions: Map<string, Set<Entity>>;
   entities: Map<string, Entity>;
+  systems?: string[];
   ecs: ECS;
 
 
-  constructor(ecs: ECS) {
+  constructor(ecs: ECS, systems?: string[]) {
     this.subscriptions = new Map<string, Set<Entity>>();
     this.entities = new Map<string, Entity>();
+    this.systems = systems;
     this.ecs = ecs;
   }
 
@@ -31,6 +33,9 @@ export class Scene {
   makeEntity(ident: Identity) {
     let e = new Entity(ident, this);
     this.entities.set(e.id, e);
+    if(this.ecs.scene == this) {
+      this.ecs.callEventSingle("init", e);
+    }
     return e;
   }
 }
