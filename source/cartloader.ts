@@ -24,7 +24,7 @@ export interface EntityStub {
 
 export function getCartPath() {
   let url = new URL(window.location.href);
-  return url.searchParams.get("cart") || "./js/testcart";
+  return url.searchParams.get("cart") || "/js/testcart";
 }
 
 export async function loadCart(cartPath: string) {
