@@ -10,7 +10,15 @@ class Move {
   public defaultComponent = "moveable";
   public priority = 0;
 
+  async init(entity: Entity) {
+    console.log("Init!");
+  }
+
   async update(entity: Entity) {
     console.log("Wee!");
+  }
+
+  async destroy(entity: Entity) {
+    console.log("Goodbye!")
   }
 }
