@@ -1,0 +1,11 @@
+{
+  "systems": ["Move"],
+  "entities": {
+    "guy": {
+      "position": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  }
+}

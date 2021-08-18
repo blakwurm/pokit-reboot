@@ -1,0 +1,14 @@
+{
+  "inherits": [],
+  "components": {
+    "identity": {
+      "scale": {
+        "x": 1,
+        "y": 1
+      }
+    },
+    "moveable": {
+      "speed": 10
+    }
+  }
+}

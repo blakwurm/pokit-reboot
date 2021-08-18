@@ -1,0 +1,9 @@
+{
+  "author": "Jordan 'Croug' LaPrise",
+  "name": "Test Cart",
+  "defaultScene": "default",
+  "modules": [],
+  "scripts": ["index.js"],
+  "sceneShards": ["default.json"],
+  "entityShards": ["guy.json"]
+}
