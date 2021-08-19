@@ -2,6 +2,20 @@ import { handler, module } from "../../../modloader.js";
 import { PokitOS } from "../../../pokit.js";
 import { InputMod } from "./input.js";
 
+let keycodeToButton = new Map(
+  [
+    ['KeyA', 'a'],
+    ['KeyS', 'b'],
+    ['KeyQ', 'x'],
+    ['KeyW', 'y'],
+    ['Digit1', 'l'],
+    ['Digit2', 'r'],
+    ['ShiftLeft', 'start'],
+    ['ControlLeft', 'select'],
+    ['AltLeft', 'opt'],
+  ]
+)
+
 @module() 
 class KeyboardInput {
 	constructor(engine: PokitOS) {
@@ -18,10 +32,20 @@ class KeyboardInput {
 
 	handleKeyDown(keyevent: KeyboardEvent) {
 		console.log('KeyDown', keyevent.code)
+		let button = keycodeToButton.get(keyevent.code)
+		if (button) {
+			this.inputmap?.set(button, 1)
+		}
+		console.log(this.inputmap?.entries())
 	}
 
 	handleKeyUp(keyevent: KeyboardEvent) {
 		console.log('KeyUp', keyevent.code)
+		let button = keycodeToButton.get(keyevent.code)
+		if (button) {
+			this.inputmap?.set(button, 0)
+		}
+		console.log(this.inputmap?.entries())
 	}
 
 	engine: PokitOS
