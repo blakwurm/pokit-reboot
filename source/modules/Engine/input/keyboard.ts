@@ -33,6 +33,7 @@ class KeyboardInput {
 	handleKeyDown(keyevent: KeyboardEvent) {
 		console.log('KeyDown', keyevent.code)
 		let button = keycodeToButton.get(keyevent.code)
+		console.log(button)
 		if (button) {
 			this.inputmap!.set(button, 1)
 		}
@@ -42,6 +43,7 @@ class KeyboardInput {
 	handleKeyUp(keyevent: KeyboardEvent) {
 		console.log('KeyUp', keyevent.code)
 		let button = keycodeToButton.get(keyevent.code)
+		console.log(button)
 		if (button) {
 			this.inputmap!.set(button, 0)
 		}
