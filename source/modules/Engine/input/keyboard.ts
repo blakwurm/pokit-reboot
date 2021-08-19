@@ -1,6 +1,6 @@
-import { handler, module } from "../../../modloader";
-import { PokitOS } from "../../../pokit";
-import { InputMod } from "./input";
+import { handler, module } from "../../../modloader.js";
+import { PokitOS } from "../../../pokit.js";
+import { InputMod } from "./input.js";
 
 @module() 
 class KeyboardInput {
