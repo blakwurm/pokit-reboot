@@ -30,28 +30,22 @@ class KeyboardInput {
 	async postLoad() {
 		this.inputmap = this.engine.modules.get('input')
 		let body = document.body
-		body.addEventListener('keydown', (e) => this.handleKeyDown(e))
-		body.addEventListener('keyup', (e) => this.handleKeyUp(e))
+		body.addEventListener('keydown', this.handleKeyDown.bind(this))
+		body.addEventListener('keyup', this.handleKeyUp.bind(this))
 	}
 
 	handleKeyDown(keyevent: KeyboardEvent) {
-		console.log('KeyDown', keyevent.code)
 		let button = keycodeToButton.get(keyevent.code)
-		console.log(button)
 		if (button) {
 			this.inputmap!.set(button, 1)
 		}
-		console.log(this.inputmap!.entries())
 	}
 
 	handleKeyUp(keyevent: KeyboardEvent) {
-		console.log('KeyUp', keyevent.code)
 		let button = keycodeToButton.get(keyevent.code)
-		console.log(button)
 		if (button) {
 			this.inputmap!.set(button, 0)
 		}
-		console.log(this.inputmap!.entries())
 	}
 
 	engine: PokitOS
