@@ -36,7 +36,7 @@ class KeyboardInput {
 		if (button) {
 			this.inputmap?.set(button, 1)
 		}
-		console.log(this.inputmap?.entries())
+		console.log(this.inputmap)
 	}
 
 	handleKeyUp(keyevent: KeyboardEvent) {
@@ -45,7 +45,7 @@ class KeyboardInput {
 		if (button) {
 			this.inputmap?.set(button, 0)
 		}
-		console.log(this.inputmap?.entries())
+		console.log(this.inputmap)
 	}
 
 	engine: PokitOS
