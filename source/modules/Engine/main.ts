@@ -24,6 +24,12 @@ class Engine {
     this.ecs.registerComponent("rendered", {
       visible: true
     })
+    this.ecs.registerComponent("tilemap", {
+      width: 0,
+      tilewidth: 0,
+      tileheight: 0,
+      tilelayers: []
+    });
     this.ecs.registerComponent("camera", {
       isMainCamera: false
     })

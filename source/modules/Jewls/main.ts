@@ -6,6 +6,10 @@ import { PokitOS, Vector } from "../../pokit.js";
 import { uuid } from "../../utils.js";
 import * as gl from "./backend/opengl.js";
 
+let globalVars = {
+  width: 0
+}
+
 @module()
 class Jewls {
   engine: PokitOS;
@@ -25,6 +29,7 @@ class Jewls {
   @handler()
   async cartLoad(manifest: CartManifest, tilesheet: HTMLImageElement) {
     gl.createImageTexture("tiles", tilesheet);
+    globalVars.width = tilesheet.width;
   }
 
   @handler()
@@ -97,5 +102,25 @@ class Debug extends Renderer {
   async destroy(entity: Entity) {
     gl.deleteTexture(entity.id)
     super.destroy(entity);
+  }
+}
+
+@system()
+class Tilemap extends Renderer {
+  defaultComponent = "tilemap";
+
+  async init(entity: Entity) {
+    let tm = entity.get("tilemap");
+    let numSpritesRow = Math.ceil(globalVars.width / tm.tilewidth);
+    gl.createTileMap(
+      entity.id,
+      "tiles", 
+      numSpritesRow,
+      tm.width,
+      tm.tilewidth,
+      tm.tileheight,
+      1,
+      tm.tiles
+    );
   }
 }
