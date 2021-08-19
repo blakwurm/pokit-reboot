@@ -33,6 +33,7 @@ export interface Vector {
 export interface Identity {
   id: string;
   parent?: Identity;
+  bounds: Vector;
   position: Vector;
   scale: Vector;
   rotation: number;

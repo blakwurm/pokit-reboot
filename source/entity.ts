@@ -14,6 +14,7 @@ const VectorOne = {
 
 const defaultParent = {
   id: "",
+  bounds: {x: 32, y: 32},
   position: VectorZero,
   scale: VectorOne,
   rotation: 0
@@ -24,6 +25,7 @@ export class Entity extends Map<string, any> implements Identity {
 
   id: string;
   parent?: Identity | undefined;
+  bounds: Vector;
   position: Vector;
   scale: Vector;
   rotation: number;
@@ -34,6 +36,7 @@ export class Entity extends Map<string, any> implements Identity {
     this.scene = scene;
     this.id = uuid();
     this.parent  = defaultParent;
+    this.bounds = {x: 32, y: 32};
     this.position = VectorZero;
     this.scale = VectorOne;
     this.rotation = 0;
