@@ -1,6 +1,6 @@
 import { Identity, Vector } from "./pokit.js";
 import { Scene } from "./scene.js";
-import { deepMerge, deepMergeNoConcat } from "./utils.js";
+import { deepMerge, deepMergeNoConcat, uuid } from "./utils.js";
 
 const VectorZero = {
   x: 0,
@@ -19,16 +19,6 @@ const defaultParent = {
   rotation: 0
 }
 
-function genId(){
-  var dt = new Date().getTime();
-  var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-      var r = (dt + Math.random()*16)%16 | 0;
-      dt = Math.floor(dt/16);
-      return (c=='x' ? r :(r&0x3|0x8)).toString(16);
-  });
-  return uuid;
-}
-
 export class Entity extends Map<string, any> implements Identity {
   private scene: Scene;
 
@@ -42,7 +32,7 @@ export class Entity extends Map<string, any> implements Identity {
     super();
 
     this.scene = scene;
-    this.id = genId();
+    this.id = uuid();
     this.parent  = defaultParent;
     this.position = VectorZero;
     this.scale = VectorOne;
