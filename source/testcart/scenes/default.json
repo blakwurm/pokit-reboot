@@ -1,7 +1,13 @@
 {
-  "systems": ["Move", "Debug"],
+  "systems": ["Move", "Debug", "Camera"],
   "entities": {
     "guy": {
+      "position": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    "camera": {
       "position": {
         "x": 0,
         "y": 0
