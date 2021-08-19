@@ -122,8 +122,8 @@ export async function initContext(canvas: HTMLCanvasElement): Promise<boolean> {
     _gl!.blendFunc(_gl!.ONE, _gl!.ONE_MINUS_SRC_ALPHA);
     _gl!.enable(_gl!.BLEND);
 
-    let vertexShaderSource = await fetch("/js/modules/Jewls/backend/shaders/default_vertex_shader.glsl").then(b => b.text());
-    let fragmentShaderSource = await fetch("/js/modules/Jewls/backend/shaders/default_fragment_shader.glsl").then(b => b.text());
+    let vertexShaderSource = await fetch("/pokit/modules/Jewls/backend/shaders/default_vertex_shader.glsl").then(b => b.text());
+    let fragmentShaderSource = await fetch("/pokit/modules/Jewls/backend/shaders/default_fragment_shader.glsl").then(b => b.text());
 
     let vertexShader = createShader(_gl!, _gl!.VERTEX_SHADER, vertexShaderSource)!;
     let fragmentShader = createShader(_gl!, _gl!.FRAGMENT_SHADER, fragmentShaderSource)!;
