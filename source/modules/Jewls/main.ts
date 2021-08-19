@@ -23,7 +23,7 @@ class Jewls {
   }
 
   @handler()
-  async preRender() {
+  async render() {
     gl.render();
   }
 }

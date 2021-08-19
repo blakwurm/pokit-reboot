@@ -91,6 +91,7 @@ export class PokitOS {
   async requestFrame() {
     requestAnimationFrame(async ()=>{
       await this.modules.callEvent("preRender");
+      await this.modules.callEvent("render");
       await this.modules.callEvent("postRender");
       this.requestFrame();
     });
