@@ -1,3 +1,4 @@
+import { CartManifest } from "../../cartloader.js";
 import { system } from "../../ecs.js";
 import { Entity } from "../../entity.js";
 import { handler, module } from "../../modloader.js";
@@ -16,10 +17,14 @@ class Jewls {
   @handler()
   async postLoad() {
     await gl.initContext(this.engine.canvas);
-    //gl.createCamera('main', 320, 320, true, 255, 255, 255, 255);
     this.engine.ecs.registerComponent("debug", {
       color: [255, 0, 0, 255]
     })
+  }
+
+  @handler()
+  async cartLoad(manifest: CartManifest, tilesheet: HTMLImageElement) {
+    gl.createImageTexture("tiles", tilesheet);
   }
 
   @handler()

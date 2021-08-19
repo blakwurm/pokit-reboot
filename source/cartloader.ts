@@ -27,12 +27,13 @@ export function getCartPath() {
   return url.searchParams.get("cart") || "/js/testcart";
 }
 
-export async function loadCart(cartPath: string) {
+export async function loadCart(cartPath: string): Promise<[CartManifest, HTMLImageElement]> {
   let resp = await fetch(cartPath + '/cart.json');
   let manifest = await resp.json() as CartManifest;
+  let tilesheet = await loadImage(cartPath + '/sprites.png')
   await resolveCart(manifest, cartPath);
 
-  return manifest;
+  return [manifest, tilesheet];
 }
 
 async function resolveCart(manifest: CartManifest, cartPath: string) {
@@ -58,6 +59,14 @@ async function resolveCart(manifest: CartManifest, cartPath: string) {
   for(let path of manifest.scripts) {
     await import(cartPath + '/scripts/' + path);
   }
+}
+
+async function loadImage(url: string): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+      let i = new Image();
+      i.onload = () => resolve(i);
+      i.src = url;
+  })
 }
 
 function getName(path: string) {

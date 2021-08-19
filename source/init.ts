@@ -11,11 +11,13 @@ export default async function main() {
 
 
   let cartPath = getCartPath();
-  let manifest = await loadCart(cartPath);
+  let [manifest, tilesheet] = await loadCart(cartPath);
   await engine.modules.loadModules(cartPath, manifest.modules);
   await engine.ecs.loadStubs(manifest);
   engine.cartPath = cartPath;
   engine.cart = manifest;
+
+  await engine.modules.callEvent("cartLoad", manifest, tilesheet);
 
   let scene;
   if(manifest.defaultScene) {
