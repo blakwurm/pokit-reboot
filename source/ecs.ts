@@ -33,6 +33,7 @@ export class ECS {
     for(let sys of this.sorted) {
       if(!(<any>sys)[evt]) continue;
       if(sys.defaultComponent) {
+        if(!this.scene.subscriptions.has(sys.defaultComponent)) continue;
         let arr = [...this.scene.subscriptions.get(sys.defaultComponent)!];
         for(let e of arr) {
           await (<any>sys)[evt](e);
