@@ -26,8 +26,8 @@ class KeyboardInput {
 	async postLoad() {
 		this.inputmap = this.engine.modules.get('input')
 		let body = document.body
-		body.addEventListener('keydown', this.handleKeyDown)
-		body.addEventListener('keyup', this.handleKeyUp)
+		body.addEventListener('keydown', (e) => this.handleKeyDown(e))
+		body.addEventListener('keyup', (e) => this.handleKeyUp(e))
 	}
 
 	handleKeyDown(keyevent: KeyboardEvent) {
