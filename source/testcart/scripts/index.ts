@@ -16,6 +16,7 @@ class Move {
 
   async update(entity: Entity) {
     //console.log("Wee!");
+    entity.rotation +=5;
   }
 
   async destroy(entity: Entity) {
