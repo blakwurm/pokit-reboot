@@ -1,4 +1,3 @@
-import { Jewls } from "./jewls.js";
 import { ECS } from "./ecs.js";
 import { ModLoader } from "./modloader.js";
 import { CartManifest } from "./cartloader.js";
@@ -23,13 +22,9 @@ export interface IRenderedObject {
 export interface CullingFunction{
   (entities: IRenderedObject[], cam: IRenderedObject):Set<IRenderedObject>|IRenderedObject[]
 }
-export interface Renderer {
-  render(cullFunc?: CullingFunction): void;
-}
 export interface StartOpts {
   fps?: number;
-  renderer?: Renderer;
-  cullFunc?: CullingFunction;
+  canvas?: HTMLCanvasElement;
 }
 export interface Vector {
   x: number,
@@ -57,17 +52,15 @@ export class PokitOS {
   time?: Time;
   fps: number;
   ecs: ECS;
-  renderer: Renderer;
   modules: ModLoader;
-  cullFunc?: CullingFunction;
+  canvas: HTMLCanvasElement;
 
   constructor(opts?: StartOpts) {
     opts = opts || {};
     this.fps = opts.fps || 30;
     this.ecs = new ECS();
-    this.renderer = opts.renderer || new Jewls();
     this.modules = new ModLoader();
-    this.cullFunc = opts.cullFunc;
+    this.canvas = opts?.canvas || document.getElementById("gamescreen") as HTMLCanvasElement;
   }
 
   async start() {
@@ -97,7 +90,6 @@ export class PokitOS {
   async requestFrame() {
     requestAnimationFrame(async ()=>{
       await this.modules.callEvent("preRender");
-      this.renderer.render(this.cullFunc);
       await this.modules.callEvent("postRender");
       this.requestFrame();
     });
