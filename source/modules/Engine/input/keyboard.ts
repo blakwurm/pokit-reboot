@@ -34,18 +34,18 @@ class KeyboardInput {
 		console.log('KeyDown', keyevent.code)
 		let button = keycodeToButton.get(keyevent.code)
 		if (button) {
-			this.inputmap?.set(button, 1)
+			this.inputmap!.set(button, 1)
 		}
-		console.log(this.inputmap)
+		console.log(this.inputmap!.entries())
 	}
 
 	handleKeyUp(keyevent: KeyboardEvent) {
 		console.log('KeyUp', keyevent.code)
 		let button = keycodeToButton.get(keyevent.code)
 		if (button) {
-			this.inputmap?.set(button, 0)
+			this.inputmap!.set(button, 0)
 		}
-		console.log(this.inputmap)
+		console.log(this.inputmap!.entries())
 	}
 
 	engine: PokitOS
