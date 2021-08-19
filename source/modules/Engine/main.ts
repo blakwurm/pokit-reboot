@@ -1,6 +1,8 @@
 import { ECS } from "../../ecs.js";
 import { handler, module } from "../../modloader.js";
 import { PokitOS } from "../../pokit.js";
+import "./input/input.js"
+import "./input/keyboard.js"
 
 @module()
 class Engine {

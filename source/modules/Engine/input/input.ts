@@ -1,7 +1,7 @@
 import { api } from "../../../modloader";
 
-@api()
-class InputMod extends Map<string, Number> {
+@api('input')
+export class InputMod extends Map<string, Number> {
 	constructor() {
 		super()
 		for (let n of [
