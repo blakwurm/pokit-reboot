@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+    </head>
+    <body>
+        <canvas id="c" height=600 width=600 style="width: 600px; height: 600px;">no canvas fo you</canvas>
+        <script type="module">
+            import * as gl from "./opengl.js";
+
+            let c = document.getElementById("c");
+            render(c);
+
+            async function render(c) {
+                await gl.initContext(c);
+                let img = await loadImage('/img/bootscreen_top.svg');
+                let img2 = await loadImage('/img/bootscreen_bottom.svg');
+                let img3 = await loadImage('/img/bootscreen_text.svg');
+
+                gl.createCamera('main', 600, 600, true, 255, 255, 255, 255);
+
+                gl.createImageTexture('img', img);
+                gl.createImageTexture('img2', img2);
+                gl.createImageTexture('img3', img3);
+                
+                gl.createActor('actor', 'img', img.width, img.height);
+                //gl.translateActor('actor', 300, 300,0);
+                gl.createActor('actor3', 'img3', img.width, img.height);
+                gl.translateActor('actor3', 0, 0, 10);
+                gl.createActor('actor2', 'img2', img.width, img.height);
+                //gl.translateActor('actor2', 300, 300,0);
+
+                gl.render();
+            }
+
+            function sleep(time) {
+                return new Promise((resolve, reject) => {
+                    setTimeout(() => resolve(), time);
+                })
+            }
+
+            function loadImage(url) {
+                return new Promise((resolve, reject) => {
+                    let i = new Image();
+                    i.onload = () => resolve(i);
+                    i.src = url;
+                })
+            }
+        </script>
+    </body>
+</html>

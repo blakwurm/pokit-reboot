@@ -22,5 +22,8 @@ class Engine {
     this.ecs.registerComponent("rendered", {
       visible: true
     })
+    this.ecs.registerComponent("camera", {
+      isMainCamera: false
+    })
   }
 }

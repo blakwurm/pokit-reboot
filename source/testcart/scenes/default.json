@@ -1,5 +1,5 @@
 {
-  "systems": ["Move"],
+  "systems": ["Move", "Debug"],
   "entities": {
     "guy": {
       "position": {

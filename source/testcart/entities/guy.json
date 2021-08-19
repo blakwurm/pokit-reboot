@@ -9,6 +9,9 @@
     },
     "moveable": {
       "speed": 10
+    },
+    "debug": {
+      "color": [0, 0, 255, 255]
     }
   }
 }

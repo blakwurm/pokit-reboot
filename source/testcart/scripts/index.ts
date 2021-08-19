@@ -15,7 +15,7 @@ class Move {
   }
 
   async update(entity: Entity) {
-    console.log("Wee!");
+    //console.log("Wee!");
   }
 
   async destroy(entity: Entity) {
