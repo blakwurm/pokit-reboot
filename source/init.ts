@@ -1,4 +1,4 @@
-import { PokitOS } from "./pokit.js";
+import { PokitOS, StartOpts } from "./pokit.js";
 import { getCartPath, loadCart } from "./cartloader.js";
 import { Scene } from "./scene.js";
 
@@ -6,8 +6,8 @@ declare global {
   interface Window { Pokit: PokitOS }
 }
 
-export default async function init(doOwnSetup: boolean = false) {
-  let engine = new PokitOS();
+export default async function init(startOpts?: StartOpts, doOwnSetup: boolean = false) {
+  let engine = new PokitOS(startOpts);
   window.Pokit = engine;
 
 
