@@ -1,4 +1,3 @@
-import main from "./init.js";
 import { PokitOS } from "./pokit.js";
 
 export class ModLoader extends Map<string, Object>{

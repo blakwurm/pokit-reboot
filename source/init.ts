@@ -1,11 +1,12 @@
 import { PokitOS } from "./pokit.js";
 import { getCartPath, loadCart } from "./cartloader.js";
+import { Scene } from "./scene.js";
 
 declare global {
   interface Window { Pokit: PokitOS }
 }
 
-export default async function main() {
+export default async function init(doOwnSetup: boolean = false) {
   let engine = new PokitOS();
   window.Pokit = engine;
 
@@ -19,24 +20,29 @@ export default async function main() {
 
   await engine.modules.callEvent("cartLoad", manifest, tilesheet);
 
-  let scene;
+  let scene: Scene;
   if(manifest.defaultScene) {
     scene = await engine.ecs.loadScene(manifest.defaultScene);
   }
 
-  await setup_console_open();
-  await engine.start();
+  let callback = async ()=>{
+    await engine.start();
 
-  if(scene) engine.ecs.transition(scene);
+    if(scene) engine.ecs.transition(scene);
+  }
+
+  if(doOwnSetup) {
+    setup_console_open(callback);
+  }
+
+  return [engine, callback];
 }
 
-async function setup_console_open() {
-  return new Promise( resolve=> {
-    (<HTMLButtonElement>document.querySelector('#onbutton')).onclick = 
-      async function() {
-        document.querySelector('#powercase_right')!.className = 'hidden';
-        document.querySelector('#powercase_left')!.className = 'hidden';
-        resolve(null);
-      }
-  } );
+export function setup_console_open(callback: ()=>Promise<void>) {
+  (<HTMLButtonElement>document.querySelector('#onbutton')).onclick = 
+    async function() {
+      document.querySelector('#powercase_right')!.className = 'hidden';
+      document.querySelector('#powercase_left')!.className = 'hidden';
+      await callback();
+    }
 }
