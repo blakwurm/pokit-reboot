@@ -104,6 +104,7 @@ export class ECS {
         entity.set(c, eStub.components[c]);
       }
     }
+    await scene.resolveLineage();
     return scene;
   }
 

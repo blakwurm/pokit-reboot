@@ -32,11 +32,14 @@ export interface Vector {
 }
 export interface Identity {
   id: string;
-  parent?: Identity;
+  parent?: Identity | string;
   bounds: Vector;
   position: Vector;
   scale: Vector;
   rotation: number;
+  globalPosition: Vector;
+  globalScale: Vector;
+  globalRotation: number;
 }
 export interface IJsonSerializableObject {
 	[index: string] : IJsonTypes,

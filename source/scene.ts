@@ -38,4 +38,12 @@ export class Scene {
     }
     return e;
   }
+
+  async resolveLineage() {
+    for(let [_,v] of this.entities){
+      if(typeof v.parent == "string") {
+        v.parent = this.entities.get(v.parent);
+      }
+    }
+  }
 }
