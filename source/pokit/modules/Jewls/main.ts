@@ -3,7 +3,6 @@ import { system } from "../../ecs.js";
 import { Entity } from "../../entity.js";
 import { handler, module } from "../../modloader.js";
 import { PokitOS, Vector } from "../../pokit.js";
-import { uuid } from "../../utils.js";
 import * as gl from "./backend/opengl.js";
 
 let globalVars = {
