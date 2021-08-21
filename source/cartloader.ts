@@ -14,7 +14,7 @@ export interface CartManifest {
 
 export interface SceneStub {
   systems: string[];
-  entities: { [stub:string]: Identity };
+  entities: { [stub:string]: Identity[] };
 }
 
 export interface EntityStub {

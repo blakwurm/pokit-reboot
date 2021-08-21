@@ -96,16 +96,22 @@ export class ECS {
     let scene = new Scene(this, sStub.systems);
     for (let e in sStub.entities) {
       let eStub = this.entityStubs.get(e)!;
-      let ident = eStub.components["identity"] || {} as Identity;
-      ident = <Identity>deepMerge(ident, sStub.entities[e]);
-      let entity = scene.makeEntity(ident);
-      for(let c in eStub.components) {
-        if(c == 'identity') continue;
-        entity.set(c, eStub.components[c]);
+      for(let i in sStub.entities[e]) {
+        this.makeEntity(sStub.entities[e][i], eStub, scene);
       }
     }
     await scene.resolveLineage();
     return scene;
+  }
+
+  async makeEntity(ovr: Identity, stub: EntityStub, scene: Scene) {
+    let ident = stub.components["identity"] || {} as Identity;
+    let lident = <Identity>deepMerge(ident, ovr);
+    let entity = scene.makeEntity(lident);
+    for(let c in stub.components) {
+      if(c == 'identity') continue;
+      entity.set(c, stub.components[c]);
+    }
   }
 
   public async transition(scene: Scene) {

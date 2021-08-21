@@ -1,25 +1,25 @@
 {
   "systems": ["Move", "Debug", "Camera"],
   "entities": {
-    "guy": {
+    "guy": [{
       "id": "guy",
       "position": {
         "x": 0,
         "y": 0
       }
-    },
-    "child": {
+    }],
+    "child": [{
       "parent": "guy",
       "position": {
         "x": 100,
         "y": 0
       }
-    },
-    "camera": {
+    }],
+    "camera": [{
       "position": {
         "x": 0,
         "y": 0
       }
-    }
+    }]
   }
 }
