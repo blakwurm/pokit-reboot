@@ -49,7 +49,7 @@ export function rotateVector(vec: Vector, theta: number): Vector {
 }
 
 export function vectorEqual(vec1: Vector, vec2: Vector) {
-  return vec1.x == vec2.x && vec1.y == vec2.y;
+  return vec1.x === vec2.x && vec1.y === vec2.y;
 }
 
 export function vectorMultiply(vec1: Vector, vec2: Vector): Vector {
@@ -63,6 +63,20 @@ export function vectorDivide(vec1: Vector, vec2: Vector): Vector {
   return {
     x: vec1.x / vec2.x,
     y: vec1.y / vec2.y
+  }
+}
+
+export function vectorAdd(vec1: Vector, vec2: Vector): Vector {
+  return {
+    x: vec1.x + vec2.x,
+    y: vec1.y + vec2.y
+  }
+}
+
+export function vectorSub(vec1: Vector, vec2: Vector): Vector {
+  return {
+    x: vec1.x - vec2.x,
+    y: vec1.y - vec2.y
   }
 }
 

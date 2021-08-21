@@ -1,6 +1,6 @@
 import { Identity, Vector } from "./pokit.js";
 import { Scene } from "./scene.js";
-import { deepMerge, deepMergeNoConcat, rotateVector, uuid, vectorDivide, vectorEqual, vectorMultiply, VectorOne, VectorZero } from "./utils.js";
+import { deepMerge, deepMergeNoConcat, rotateVector, uuid, vectorAdd, vectorDivide, vectorEqual, vectorMultiply, VectorOne, vectorSub, VectorZero } from "./utils.js";
 
 const defaultParent = {
   id: "",
@@ -25,6 +25,7 @@ export class Entity extends Map<string, any> implements Identity {
   parentRot: number;
   parentPos: Vector;
   parentScale: Vector;
+  lastPos: Vector;
   cachedPos?: Vector;
 
   constructor(ident: Identity, scene: Scene) {
@@ -40,6 +41,7 @@ export class Entity extends Map<string, any> implements Identity {
     this.parentRot = 0;
     this.parentPos = VectorZero();
     this.parentScale = VectorOne();
+    this.lastPos = VectorZero();
 
     let i = deepMerge(this, ident);
     Object.assign(this, i);
@@ -52,15 +54,17 @@ export class Entity extends Map<string, any> implements Identity {
 
     if(  vectorEqual(parent.globalPosition, this.parentPos)
       && vectorEqual(parent.globalScale, this.parentScale)
+      && vectorEqual(this.lastPos, this.position)
       && parent.globalRotation == this.parentRot
       && this.cachedPos ) return this.cachedPos;
       
     let scaledPos = vectorMultiply(this.position, parent.globalScale);
 
-    this.cachedPos = rotateVector(scaledPos, parent.globalRotation);
+    this.cachedPos = vectorAdd(rotateVector(scaledPos, parent.globalRotation), parent.globalPosition);
     this.parentRot = parent.globalRotation;
     Object.assign(this.parentPos, parent.globalPosition);
     Object.assign(this.parentScale, parent.globalScale);
+    Object.assign(this.lastPos, this.position);
     
     return this.cachedPos;
   }
@@ -68,7 +72,9 @@ export class Entity extends Map<string, any> implements Identity {
   public set globalPosition(pos: Vector) {
     let parent = this.parent as Identity;
     this.cachedPos = pos;
-    this.position = rotateVector(pos, -parent.globalRotation);
+
+    this.position = vectorSub(pos, parent.globalPosition);
+    this.position = rotateVector(this.position, -parent.globalRotation);
     this.position = vectorDivide(this.position, parent.globalScale);
     this.parentRot = parent.globalRotation;
     Object.assign(this.parentPos, parent.globalPosition);
