@@ -1,39 +1,39 @@
-import { Vector } from "./pokit";
+import { Identity, Vector } from "./pokit";
 
-export function deepMerge(o: any, ...arr: any[]){
-  let ret = Object.assign({},o);
-  for(let obj of arr){
-      for(let [k,v] of Object.entries(obj)){
-          if(typeof ret[k] !== typeof v || typeof v !== "object")
-              ret[k] = v;
-          else if (Array.isArray(v))
-              ret[k] = (<Array<any>>ret[k]).concat(v);
-          else
-              ret[k] = deepMergeNoConcat(ret[k], v!);
-      }
+export function deepMerge(o: any, ...arr: any[]) {
+  let ret = Object.assign({}, o);
+  for (let obj of arr) {
+    for (let [k, v] of Object.entries(obj)) {
+      if (typeof ret[k] !== typeof v || typeof v !== "object")
+        ret[k] = v;
+      else if (Array.isArray(v))
+        ret[k] = (<Array<any>>ret[k]).concat(v);
+      else
+        ret[k] = deepMergeNoConcat(ret[k], v!);
+    }
   }
   return ret;
 }
 
-export function deepMergeNoConcat(o: any, ...arr: any[]){
-  let ret = Object.assign({},o);
-  for(let obj of arr){
-      for(let [k,v] of Object.entries(obj)){
-          if(typeof ret[k] !== typeof v || typeof v !== "object" || Array.isArray(v))
-              ret[k] = v;
-          else
-              ret[k] = deepMergeNoConcat(ret[k], v!);
-      }
+export function deepMergeNoConcat(o: any, ...arr: any[]) {
+  let ret = Object.assign({}, o);
+  for (let obj of arr) {
+    for (let [k, v] of Object.entries(obj)) {
+      if (typeof ret[k] !== typeof v || typeof v !== "object" || Array.isArray(v))
+        ret[k] = v;
+      else
+        ret[k] = deepMergeNoConcat(ret[k], v!);
+    }
   }
   return ret;
 }
 
-export function uuid(){
+export function uuid() {
   var dt = new Date().getTime();
-  var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-      var r = (dt + Math.random()*16)%16 | 0;
-      dt = Math.floor(dt/16);
-      return (c=='x' ? r :(r&0x3|0x8)).toString(16);
+  var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    var r = (dt + Math.random() * 16) % 16 | 0;
+    dt = Math.floor(dt / 16);
+    return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
   });
   return uuid;
 }
@@ -100,4 +100,85 @@ export function deg2rad(deg: number) {
 
 export function rad2deg(rad: number) {
   return rad * (180 / Math.PI);
+}
+
+export default class SpatialHashMap {
+  map: Map<string, Identity[]>;
+  cellsize: number;
+
+  constructor(cellsize: number) {
+    this.map = new Map();
+    this.cellsize = cellsize;
+  }
+
+  add(identity: Identity): SpatialHashMap {
+    let spatialKeys = this.makeSpatialKey(identity);
+    for (let key of spatialKeys) {
+      let bucket = this.map.get(key) || [];
+      bucket.push(identity);
+      this.map.set(key, bucket);
+    }
+    return this;
+  }
+
+  addMany(identities: Identity[]): SpatialHashMap {
+    const callback = this.add.bind(this);
+    identities.forEach(callback);
+    return this;
+  }
+
+  findNearby(identity: Identity): Set<Identity> {
+    const identities = new Set<Identity>();
+    const keys = this.makeSpatialKey(identity);
+
+    for (let key of keys) {
+      const v = this.map.get(key);
+      if (v) {
+        v.forEach(x => identities.add(x));
+      }
+    }
+    return identities;
+  }
+
+  findColliding(identity: Identity): Identity[] {
+    const set = this.findNearby(identity);
+    const arr = [...set];
+
+    let identityPosition = identity.globalPosition;
+    let identityBounds = vectorMultiply(identity.bounds, identity.globalScale);
+
+    const filter = (i: Identity) => {
+      let position = i.globalPosition;
+      let bounds = vectorMultiply(i.bounds, i.globalScale);
+
+      return identityPosition.x < position.x + bounds.x &&
+        identityPosition.x + identityBounds.x > position.x &&
+        identity.z < i.z + i.depth &&
+        identity.z + identity.depth > i.z &&
+        identityPosition.y < position.y + bounds.y && 
+        identityPosition.y + identityBounds.y > position.y
+    };
+    return arr.filter(filter);
+  }
+
+  private makeSpatialKey(identity: Identity): string[] {
+    const cs = this.cellsize;
+    let { x, y } = identity.globalPosition;
+    let { x: width, y: height } = identity.bounds;
+    let { z, depth } = identity;
+
+    let hw = Math.floor((x + (width / 2)) / cs)
+    let hh = Math.floor((y + (height / 2)) / cs)
+    let hd = Math.floor((z + (depth / 2)) / cs)
+
+    let keys = []
+    for (let xi = Math.floor(((x || 1) - (width / 2)) / cs); xi <= hw; xi = xi + 1) {
+      for (let yi = Math.floor((((y || 1)) - (height / 2)) / cs); yi <= hh; yi = yi + 1) {
+        for (let zi = Math.floor((z - (depth / 2)) / cs); zi <= hd; zi = zi + 1) {
+          keys.push(xi + "," + yi + "," + zi);
+        }
+      }
+    }
+    return keys;
+  }
 }

@@ -35,6 +35,8 @@ export interface Identity {
   parent?: Identity | string;
   bounds: Vector;
   position: Vector;
+  z: number;
+  depth: number;
   scale: Vector;
   rotation: number;
   globalPosition: Vector;

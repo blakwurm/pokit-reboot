@@ -1,3 +1,4 @@
+import { IPhysicsState } from "./modules/Physics/physics.js";
 import { Identity, Vector } from "./pokit.js";
 import { Scene } from "./scene.js";
 import { deepMerge, deepMergeNoConcat, rotateVector, uuid, vectorAdd, vectorDivide, vectorEqual, vectorMultiply, VectorOne, vectorSub, VectorZero } from "./utils.js";
@@ -6,6 +7,8 @@ const defaultParent = {
   id: "",
   bounds: {x: 32, y: 32},
   position: VectorZero(),
+  z:0,
+  depth:1,
   scale: VectorOne(),
   rotation: 0,
   globalPosition: VectorZero(),
@@ -20,12 +23,16 @@ export class Entity extends Map<string, any> implements Identity {
   parent?: Identity | string;
   bounds: Vector;
   position: Vector;
+  z:number;
+  depth:number;
   scale: Vector;
   rotation: number;
   parentRot: number;
   parentPos: Vector;
   parentScale: Vector;
   lastPos: Vector;
+  physics: IPhysicsState;
+
   cachedPos?: Vector;
 
   constructor(ident: Identity, scene: Scene) {
@@ -36,12 +43,19 @@ export class Entity extends Map<string, any> implements Identity {
     this.parent = defaultParent;
     this.bounds = {x: 32, y: 32};
     this.position = VectorZero();
+    this.z = 0;
+    this.depth = 1;
     this.scale = VectorOne();
     this.rotation = 0;
     this.parentRot = 0;
     this.parentPos = VectorZero();
     this.parentScale = VectorOne();
     this.lastPos = VectorZero();
+    this.physics = {
+      collidable: false,
+      gravity: false,
+      mass: 0
+    };
 
     let i = deepMerge(this, ident);
     Object.assign(this, i);

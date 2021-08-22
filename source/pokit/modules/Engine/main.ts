@@ -32,6 +32,11 @@ class Engine {
     });
     this.ecs.registerComponent("camera", {
       isMainCamera: false
-    })
+    });
+    this.ecs.registerComponent("physics", {
+      collidable: true,
+      gravity: false,
+      density: 9001
+    });
   }
 }
