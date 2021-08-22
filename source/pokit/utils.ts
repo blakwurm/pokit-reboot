@@ -1,5 +1,16 @@
 import { Identity, Vector } from "./pokit";
 
+export interface Vector3 {
+  x: number;
+  y: number;
+  z: number;
+}
+
+export interface ICollider {
+  min: Vector3;
+  max: Vector3;
+}
+
 export function deepMerge(o: any, ...arr: any[]) {
   let ret = Object.assign({}, o);
   for (let obj of arr) {
@@ -141,25 +152,54 @@ export default class SpatialHashMap {
   }
 
   findColliding(identity: Identity): Identity[] {
-    const set = this.findNearby(identity);
-    const arr = [...set];
+		return [...this.findNearby(identity)].filter(e=>e != identity && this.isColliding(this.getCollider(e),this.getCollider(identity)));
+	}
+	getCollider(identity: Identity):ICollider{
+    let bounds = vectorMultiply(identity.bounds, identity.globalScale)
+    let pos = identity.globalPosition;
+    return {
+			min:{
+				x:pos.x - (bounds.x/2),
+				y:pos.y - (bounds.y/2),
+				z:identity.z
+			},
+			max:{
+				x:pos.x + (bounds.x/2),
+				y:pos.y + (bounds.y/2),
+				z:identity.z + identity.depth
+			}
+		}
+	}
+	isColliding(a: ICollider, b: ICollider){
+		return !(
+				a.max.x <= b.min.x ||
+				a.min.x >= b.max.x ||
+				a.max.y <= b.min.y ||
+				a.min.y >= b.max.y ||
+				a.max.z <= b.min.z ||
+				a.min.z >= b.max.z );
+	}
 
-    let identityPosition = identity.globalPosition;
-    let identityBounds = vectorMultiply(identity.bounds, identity.globalScale);
+  // findColliding(identity: Identity): Identity[] {
+  //   const set = this.findNearby(identity);
+  //   const arr = [...set];
 
-    const filter = (i: Identity) => {
-      let position = i.globalPosition;
-      let bounds = vectorMultiply(i.bounds, i.globalScale);
+  //   let identityPosition = identity.globalPosition;
+  //   let identityBounds = vectorMultiply(identity.bounds, identity.globalScale);
 
-      return identityPosition.x < position.x + bounds.x &&
-        identityPosition.x + identityBounds.x > position.x &&
-        identity.z < i.z + i.depth &&
-        identity.z + identity.depth > i.z &&
-        identityPosition.y < position.y + bounds.y && 
-        identityPosition.y + identityBounds.y > position.y
-    };
-    return arr.filter(filter);
-  }
+  //   const filter = (i: Identity) => {
+  //     let position = i.globalPosition;
+  //     let bounds = vectorMultiply(i.bounds, i.globalScale);
+
+  //     return identityPosition.x < position.x + bounds.x &&
+  //       identityPosition.x + identityBounds.x > position.x &&
+  //       identity.z < i.z + i.depth &&
+  //       identity.z + identity.depth > i.z &&
+  //       identityPosition.y < position.y + bounds.y && 
+  //       identityPosition.y + identityBounds.y > position.y
+  //   };
+  //   return arr.filter(filter);
+  // }
 
   private makeSpatialKey(identity: Identity): string[] {
     const cs = this.cellsize;
