@@ -4,8 +4,6 @@ let fs = require('fs');
 let path = require('path');
 let Glob = require('glob');
 
-let obj = fs.readdirSync('./source/pokit');
-
 let arr = process.argv;
 let dest = arr.pop();
 let glob = arr.pop();
