@@ -3,9 +3,17 @@
   "version": "1.0.0",
   "description": "Reboot of Pokit3 fantasy console",
   "main": "index.js",
+  "bin": {
+    "copy-assets": "./scripts/copy-assets.js"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "copy": "node ./scripts/copy-assets.js source/pokit \"**/*[!.ts]\" ./pokit",
+    "build": "tsc && npm run copy"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "glob": "^7.1.7"
+  }
 }
