@@ -32,11 +32,11 @@ This next part is where some manifests will differ, this manifest has opted to s
 By looking at this manifest we can infer what the project structure should look like. All scripts must be in a scripts folder, all entities must be in an entities folder, and all scenes must be in a scenes folder. This is what the project structure of this cart looks like
 
 >> entities
+>>> player.json
+>>>
 >>> camera.json
 >>>
->>> child.json
->>>
->>> guy.json
+>>> background.json
 >
 >> scenes
 >>> default.json
