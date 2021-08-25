@@ -200,3 +200,24 @@ Now we get to the meat of our Move system, the `update` event. Even though we're
 We have now covered the last 3 letters of MACES, CES, or more commonly ECS. This is all you need, in addition to the source and api reference, to start developing game carts with Pokit! These simple concepts applied correctly, can result in even the most advanced of games, but without the complex and lengthy setup. Although this primer has been long so far, once you get the hang of it, this will create an efficient streamlined workflow, especially once you add the toolchain!
 
 In the next section, we will cover the first two letters of MACES, Module and API. These are for more advanced developers, and allow you to create extensions that hook into the behavior of the engine itself, to create addons for yourself, or even other developers to utilize in their game carts. You can develop things like alternate input mappings, a custom phsyics system, or even your own renderer!
+
+---
+# Modules & APIs
+
+Modules and APIs make up the first two letters of the MACES system, and are functionally identical. They both are instantiated in essentially the same way, and loaded in the same way, the only difference is when a module is specified as an API it is made available for other modules and the cart to be accessed and interacted with via modules.get. Now it is here that we make a distinction between the module and the module class. A module can contain multiple apis and module classes. The module itself is a collection of files made available through an entry point, the main.js file, when the engine is loaded, it will first check with the cart to determine which modules should be loaded, and then it will run each modules main.js file, where the module will then take over. A module class can then be registered inside of the module, which has engine lifetime events.
+
+To create a module on our cart, all we need to do is make a folder named `modules` in the project, then make a subfolder with our module name, typically the first letter is capitalized in the module name. Then we make a main.js. or main.ts file. Finally we need to activate the module, by adding it's name to the list of modules in the cart manifest.
+
+To create a module class, simply decorate it as `@module()` or `@api()` just like the system, the engine instance will be passed into the constructor. Once you have decorated your class as a module or an api, you will likely want to receive events from the engine. To do this simply decorate a member function with `@handler()` optionally passing in the event you want to listen for (defaults to function name).
+
+Here are the events you can listen for.
+> * `postLoad()` - Called once all of the modules are loaded
+> * `cartLoad(manifest: CartManifest, tilesheet: HTMLImageElement)` - Called once the cart is fully loaded
+> * `awake()` - Called once the engine is fully initialized
+> * `preRender()` - Called before the render step
+> * `render()` - Called as the render step
+> * `postRender()` - Called after the render step
+> * `preUpdate()` - Called before the ecs update
+> * `postUpdate()` - Called after the ecs update
+
+As you can say developing modules under Pokit and MACES is a simple process, meant to help your code work in tandem with the pokit MACES for an efficient and streamlined workflow. You can leverage this system to create additions to the Pokit ecosystem and help build our library of growing modules!
