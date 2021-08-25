@@ -170,7 +170,6 @@ class Move {
 
   engine: PokitOS;
   input?: Map<string,number>;
-  speed?: number;
 
   constructor(engine: PokitOS) {
     this.engine = engine;
@@ -178,10 +177,10 @@ class Move {
 
   init(entity: Entity) {
     this.input = engine.modules.get("input") as Map<string,number>;
-    this.speed = entity.get("moveable").speed as number;
   }
 
   update(entity: Entity) {
+    let speed = entity.get("moveable").speed as number;
     entity.position.y -= this.input!.get("up") * speed!;
     entity.position.y += this.input!.get("down") * speed!;
     entity.position.y -= this.input!.get("left") * speed!;
