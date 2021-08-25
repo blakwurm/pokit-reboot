@@ -19,7 +19,11 @@ class Engine {
     this.ecs.registerComponent("sprite", {
       palette: 0,
       currentFrame: 0,
-      frames: [{x: 0, y: 0}]
+      currentAnimation: "idle",
+      source: {x:0,y:0},
+      animations: {
+        "idle":[{x:0,y:0}]
+      }
     });
     this.ecs.registerComponent("rendered", {
       visible: true

@@ -3,6 +3,7 @@ import { system } from "../../ecs.js";
 import { Entity } from "../../entity.js";
 import { handler, module } from "../../modloader.js";
 import { PokitOS, Vector } from "../../pokit.js";
+import { vectorAdd } from "../../utils.js";
 import * as gl from "./backend/opengl.js";
 
 let globalVars = {
@@ -47,7 +48,8 @@ class Renderer {
 
   async update(entity: Entity) {
     let sprite = entity.get("sprite");
-    let coords: Vector = sprite.frames[sprite.currentFrame];
+    let anim: Vector[] = sprite.animations[sprite.currentAnimation];
+    let coords = vectorAdd(anim[sprite.currentFrame], sprite.source);
 
     gl.setActorSprite(entity.id, coords.x, coords.y, 0, [1,0,1,1]);
     gl.translateActor(entity.id, entity.globalPosition.x, entity.globalPosition.y);
