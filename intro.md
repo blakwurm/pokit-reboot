@@ -77,10 +77,10 @@ Let's create a couple more entities. These next two samples are the `player.json
       "speed": 10
     },
     "sprite": {
-        "source": {
-            "x":0,
-            "y":2
-        }
+      "source": {
+        "x":26,
+        "y":13
+      }
     },
     "rendered": {}
   }
@@ -98,10 +98,10 @@ Let's create a couple more entities. These next two samples are the `player.json
         }
     },
     "sprite": {
-        "source": {
-            "x":26,
-            "y":13
-        }
+      "source": {
+        "x":0,
+        "y":2
+      }
     },
     "rendered": {}
   }
@@ -161,7 +161,7 @@ Let's go ahead and build the `Move` system, so we can control our player. Buildi
 
 ```ts
 import { PokitOS, Entity } from '/pokit/pokit';
-import { system } from '/pokit/modloader';
+import { system } from '/pokit/ecs.js';
 
 /* -- component code here -- */
 
@@ -184,8 +184,8 @@ class Move {
     let speed = entity.get("moveable").speed as number;
     entity.position.y -= this.input!.get("up")! * speed!;
     entity.position.y += this.input!.get("down")! * speed!;
-    entity.position.y -= this.input!.get("left")! * speed!;
-    entity.position.y += this.input!.get("right")! * speed!;
+    entity.position.x -= this.input!.get("left")! * speed!;
+    entity.position.x += this.input!.get("right")! * speed!;
   }
 }
 ```
