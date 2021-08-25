@@ -647,7 +647,7 @@ function drawActor(actor: IActor, programData: IProgram, camera: ICamera, yFlip:
 /** Renders all viewports */
 export function render(sortFunc?: (e?:any[], c?:any)=>any[]) {
     //@ts-ignore
-    sortFunc = sortFunc || ((entities, cam) => entities);
+    sortFunc = sortFunc || ((entities, cam) => entities?.sort((a,b)=>a.z-b.z));
 
     _gl!.colorMask(true, true, true, true);
 
