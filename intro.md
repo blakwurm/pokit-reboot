@@ -160,7 +160,8 @@ As I mentioned previously, systems can be set to listen for events only on entit
 Let's go ahead and build the `Move` system, so we can control our player. Building systems in Pokit using typescript is simple. We simply decorate our class with `@system()` and optionally a system name (default is the class name), and it will be automatically added to MACES for use. Let's try that now, go ahead and add the following code to our `index.ts`
 
 ```ts
-import { PokitOS } from '/pokit/pokit.js';
+import { PokitOS, Entity } from '/pokit/pokit';
+import { system } from '/pokit/modloader';
 
 /* -- component code here -- */
 
@@ -176,15 +177,15 @@ class Move {
   }
 
   init(entity: Entity) {
-    this.input = engine.modules.get("input") as Map<string,number>;
+    this.input = this.engine.modules.get("input") as Map<string,number>;
   }
 
   update(entity: Entity) {
     let speed = entity.get("moveable").speed as number;
-    entity.position.y -= this.input!.get("up") * speed!;
-    entity.position.y += this.input!.get("down") * speed!;
-    entity.position.y -= this.input!.get("left") * speed!;
-    entity.position.y += this.input!.get("right") * speed!;
+    entity.position.y -= this.input!.get("up")! * speed!;
+    entity.position.y += this.input!.get("down")! * speed!;
+    entity.position.y -= this.input!.get("left")! * speed!;
+    entity.position.y += this.input!.get("right")! * speed!;
   }
 }
 ```
