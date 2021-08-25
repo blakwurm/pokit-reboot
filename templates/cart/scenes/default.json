@@ -1,0 +1,12 @@
+{
+  "systems": ["Move", "Renderer", "Camera"],
+  "entities": {
+    "player": [{
+      "id": "player"
+    }],
+    "background": [{}],
+    "camera": [{
+      "parent": "player"
+    }]
+  }
+}

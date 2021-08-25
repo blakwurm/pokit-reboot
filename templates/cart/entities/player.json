@@ -1,0 +1,15 @@
+{
+  "inherits": [],
+  "components": {
+    "moveable": {
+      "speed": 10
+    },
+    "sprite": {
+      "source": {
+        "x":26,
+        "y":13
+      }
+    },
+    "rendered": {}
+  }
+}

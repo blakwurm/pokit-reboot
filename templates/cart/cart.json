@@ -1,0 +1,13 @@
+{
+  "author": "Jordan 'Croug' LaPrise",
+  "name": "Test Cart",
+  "defaultScene": "default",
+  "modules": ["@pokit:Engine","@pokit:Jewls"],
+  "scripts": ["index.js"],
+  "sceneShards": ["default.json"],
+  "entityShards": [
+      "player.json",
+      "camera.json",
+      "background.json"
+      ]
+}

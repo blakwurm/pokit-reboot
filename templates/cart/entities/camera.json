@@ -1,0 +1,8 @@
+{
+  "inherits": [],
+  "components": {
+    "camera": {
+      "isMainCamera": true
+    }
+  }
+}
