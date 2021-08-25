@@ -52,7 +52,7 @@ class Renderer {
     let coords = vectorAdd(anim[sprite.currentFrame], sprite.source);
 
     gl.setActorSprite(entity.id, coords.x, coords.y, 0, [1,0,1,1]);
-    gl.translateActor(entity.id, entity.globalPosition.x, entity.globalPosition.y);
+    gl.translateActor(entity.id, entity.globalPosition.x, entity.globalPosition.y, entity.z);
     gl.rotateActor(entity.id, -entity.globalRotation);
     gl.scaleActor(entity.id, entity.globalScale.x, entity.globalScale.y);
   }
@@ -76,7 +76,7 @@ class Camera {
   }
 
   async update(entity: Entity) {
-    gl.translateCamera(entity.id, entity.globalPosition.x, -entity.globalPosition.y);
+    gl.translateCamera(entity.id, entity.globalPosition.x, entity.globalPosition.y);
   }
 
   async destroy(entity: Entity) {
