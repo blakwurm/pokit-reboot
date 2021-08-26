@@ -23,7 +23,7 @@ export interface CullingFunction{
   (entities: IRenderedObject[], cam: IRenderedObject):Set<IRenderedObject>|IRenderedObject[]
 }
 export interface StartOpts {
-  fps?: number;
+  tps?: number;
   canvas?: HTMLCanvasElement;
 }
 export interface Vector {
@@ -56,14 +56,14 @@ export class PokitOS {
   cart?: CartManifest;
   cartPath?: string;
   time?: Time;
-  fps: number;
+  tps: number;
   ecs: ECS;
   modules: ModLoader;
   canvas: HTMLCanvasElement;
 
   constructor(opts?: StartOpts) {
     opts = opts || {};
-    this.fps = opts.fps || 30;
+    this.tps = opts.tps || 30;
     this.ecs = new ECS();
     this.modules = new ModLoader();
     this.canvas = opts?.canvas || document.getElementById("gamescreen") as HTMLCanvasElement;
@@ -81,7 +81,7 @@ export class PokitOS {
       prev: performance.now(),
       delta: 0,
       pending: 0,
-      interval: 1000/this.fps
+      interval: 1000/this.tps
     };
   }
 
