@@ -115,7 +115,7 @@ export class Entity extends Map<string, any> implements Identity {
     for(let [key,] of this) {
       this.scene.unsubcribeEntity(key, this);
     }
-    this.scene.ecs.callEventSingle("destroy", this);
+    this.scene.callEventSingle("destroy", this);
     this.scene.entities.delete(this.id);
   }
 }

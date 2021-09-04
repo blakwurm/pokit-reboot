@@ -12,48 +12,26 @@ export interface System {
   destroy?(entity: Entity | Entity[]): void;
 }
 
-export class ECS {
+export class ECS extends Map<string, Scene> {
   entityStubs: Map<string, EntityStub>;
   sceneStubs: Map<string, SceneStub>;
   components: Map<string, any>;
   systems: Map<string, System>;
-  sorted: System[];
-  scene: Scene;
 
   constructor() {
+    super();
+
     this.entityStubs = new Map<string, EntityStub>();
     this.sceneStubs = new Map<string, SceneStub>();
     this.components = new Map<string, any>();
     this.systems = new Map<string, System>();
-    this.scene = new Scene(this);
-    this.sorted = [];
+
+    this.set("__default__", new Scene(this));
   }
 
   async callEvent(evt: string) {
-    for(let sys of this.sorted) {
-      if(!(<any>sys)[evt]) continue;
-      if(sys.defaultComponent) {
-        if(!this.scene.subscriptions.has(sys.defaultComponent)) continue;
-        let arr = [...this.scene.subscriptions.get(sys.defaultComponent)!];
-        for(let e of arr) {
-          await (<any>sys)[evt](e);
-        }
-        continue;
-      }
-      let arr = [...this.scene.entities.values()];
-      await (<any>sys)[evt](arr);
-    }
-  }
-
-  async callEventSingle(evt: string, e: Entity, component?: string) {
-    let sorted = this.sorted.filter((x)=> {
-      return x.defaultComponent==component 
-    });
-
-    let a = component ? e : [e];
-    for(let sys of sorted) {
-      if(!(<any>sys)[evt]) continue;
-      await (<any>sys)[evt](a);
+    for(let [,v] of this) {
+      await v.callEvent(evt);
     }
   }
 
@@ -98,6 +76,7 @@ export class ECS {
       }
     }
     await scene.resolveLineage();
+    scene.sortSystems();
     return scene;
   }
 
@@ -111,13 +90,6 @@ export class ECS {
     }
   }
 
-  public async transition(scene: Scene) {
-    await this.callEvent("destroy");
-    this.scene = scene;
-    this.sortSystems();
-    await this.callEvent("init");
-  }
-
   public registerSystem(name: string, system: System) {
     if(!system.priority)system.priority = 0;
     this.systems.set(name, system);
@@ -129,17 +101,9 @@ export class ECS {
   }
 
   public sortSystems() {
-    this.sorted = [];
-    if(this.scene.systems) {
-      let systems = this.systems;
-      this.sorted = this.scene.systems.map(s=>systems.get(s)!);
+    for(let [,v] of this) {
+      v.sortSystems();
     }
-    for(let [k,v] of this.systems) {
-      if(this.scene.subscriptions.has(k) ||! v.defaultComponent) {
-        this.sorted.push(v);
-      }
-    }
-    this.sorted.sort((a, b) => b.priority! - a.priority!);
   }
 }
 
