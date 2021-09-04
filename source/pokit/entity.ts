@@ -3,19 +3,6 @@ import { Identity, Vector } from "./pokit.js";
 import { Scene } from "./scene.js";
 import { deepMerge, deepMergeNoConcat, rotateVector, uuid, vectorAdd, vectorDivide, vectorEqual, vectorMultiply, VectorOne, vectorSub, VectorZero } from "./utils.js";
 
-const defaultParent = {
-  id: "",
-  bounds: {x: 32, y: 32},
-  position: VectorZero(),
-  z:0,
-  depth:1,
-  scale: VectorOne(),
-  rotation: 0,
-  globalPosition: VectorZero(),
-  globalScale: VectorOne(),
-  globalRotation: 0
-}
-
 export class Entity extends Map<string, any> implements Identity {
   private scene: Scene;
 
@@ -40,7 +27,7 @@ export class Entity extends Map<string, any> implements Identity {
 
     this.scene = scene;
     this.id = uuid();
-    this.parent = defaultParent;
+    this.parent = scene;
     this.bounds = {x: 32, y: 32};
     this.position = VectorZero();
     this.z = 0;

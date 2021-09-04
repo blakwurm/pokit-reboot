@@ -1,19 +1,63 @@
 import { ECS } from "./ecs.js";
 import { Entity } from "./entity.js";
-import { Identity, IJsonSerializableObject } from "./pokit.js";
+import { Identity, IJsonSerializableObject, Vector } from "./pokit.js";
+import { deepMergeNoConcat, defaultParent, uuid, VectorOne, VectorZero } from "./utils.js";
 
-export class Scene {
+export class Scene implements Identity{
   subscriptions: Map<string, Set<Entity>>;
   entities: Map<string, Entity>;
   systems?: string[];
   ecs: ECS;
+  
+  id: string;
+  parent?: string | Identity | undefined;
+  bounds: Vector;
+  position: Vector;
+  z: number;
+  depth: number;
+  scale: Vector;
+  rotation: number;
 
-
-  constructor(ecs: ECS, systems?: string[]) {
+  constructor(ecs: ECS, systems?: string[], pos?: Identity) {
     this.subscriptions = new Map<string, Set<Entity>>();
     this.entities = new Map<string, Entity>();
     this.systems = systems;
     this.ecs = ecs;
+
+    this.id = uuid();
+    this.bounds = VectorOne();
+    this.position = VectorZero();
+    this.z = 0;
+    this.depth = 0;
+    this.scale = VectorOne();
+    this.rotation = 0;
+
+    let o = deepMergeNoConcat(this, pos);
+    Object.assign(this, o);
+  }
+
+  get globalPosition() {
+    return this.position;
+  }
+
+  set globalPosition(value: Vector) {
+    this.position = value;
+  }
+
+  get globalScale() {
+    return this.scale;
+  }
+
+  set globalScale(value: Vector) {
+    this.scale = value;
+  }
+
+  get globalRotation() {
+    return this.rotation;
+  }
+
+  set globalRotation(value: number) {
+    this.rotation = value;
   }
 
   subscribeEntity(component: string, entity: Entity) {

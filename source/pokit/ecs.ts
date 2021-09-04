@@ -88,9 +88,9 @@ export class ECS {
     return base as EntityStub;
   }
 
-  public async loadScene(name: string) {
+  public async loadScene(name: string, pos?: Identity) {
     let sStub = this.sceneStubs.get(name)!;
-    let scene = new Scene(this, sStub.systems);
+    let scene = new Scene(this, sStub.systems, pos);
     for (let e in sStub.entities) {
       let eStub = this.entityStubs.get(e)!;
       for(let i in sStub.entities[e]) {

@@ -11,6 +11,19 @@ export interface ICollider {
   max: Vector3;
 }
 
+export const defaultParent = {
+  id: "",
+  bounds: {x: 32, y: 32},
+  position: VectorZero(),
+  z:0,
+  depth:1,
+  scale: VectorOne(),
+  rotation: 0,
+  globalPosition: VectorZero(),
+  globalScale: VectorOne(),
+  globalRotation: 0
+}
+
 export function deepMerge(o: any, ...arr: any[]) {
   let ret = Object.assign({}, o);
   for (let obj of arr) {
