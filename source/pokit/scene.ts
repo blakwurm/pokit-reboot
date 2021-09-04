@@ -1,7 +1,7 @@
 import { ECS } from "./ecs.js";
 import { Entity } from "./entity.js";
-import { Identity, IJsonSerializableObject, Vector } from "./pokit.js";
-import { deepMergeNoConcat, defaultParent, uuid, VectorOne, VectorZero } from "./utils.js";
+import { Identity, Vector } from "./pokit.js";
+import { deepMergeNoConcat, uuid, VectorOne, VectorZero } from "./utils.js";
 
 export class Scene implements Identity{
   subscriptions: Map<string, Set<Entity>>;
