@@ -30,6 +30,15 @@ export class Scene {
     }
   }
 
+  unsubcribeEntity(component: string, entity: Entity) {
+    let e = this.subscriptions.get(component)!;
+    e.delete(entity);
+
+    if(e.size < 1) this.subscriptions.delete(component);
+
+    this.ecs.callEventSingle("destroy", entity, component);
+  }
+
   makeEntity(ident: Identity) {
     let e = new Entity(ident, this);
     this.entities.set(e.id, e);
@@ -40,7 +49,7 @@ export class Scene {
   }
 
   async resolveLineage() {
-    for(let [_,v] of this.entities){
+    for(let [,v] of this.entities){
       if(typeof v.parent == "string") {
         v.parent = this.entities.get(v.parent);
       }

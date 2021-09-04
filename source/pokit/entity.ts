@@ -112,7 +112,7 @@ export class Entity extends Map<string, any> implements Identity {
   }
 
   public set(component: string, opts: any) {
-    let data = deepMergeNoConcat({}, this.scene.ecs.components.get(component), opts);
+    let data = deepMergeNoConcat(this.scene.ecs.components.get(component), opts);
 
     super.set(component, data);
     this.scene.subscribeEntity(component, this);
@@ -122,5 +122,13 @@ export class Entity extends Map<string, any> implements Identity {
 
   public delete(component: string) {
     return super.delete(component);
+  }
+
+  public destroy() {
+    for(let [key,] of this) {
+      this.scene.unsubcribeEntity(key, this);
+    }
+    this.scene.ecs.callEventSingle("destroy", this);
+    this.scene.entities.delete(this.id);
   }
 }
