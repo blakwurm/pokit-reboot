@@ -1,6 +1,6 @@
 import { CartManifest, EntityStub, SceneStub } from "./cartloader.js";
 import { Entity } from "./entity.js";
-import { Identity, IJsonSerializableObject, PokitOS } from "./pokit.js";
+import { Identity, IdentityProps, IJsonSerializableObject, PokitOS } from "./pokit.js";
 import { Scene } from "./scene.js";
 import { deepMerge, deepMergeNoConcat } from "./utils.js";
 
@@ -26,7 +26,8 @@ export class ECS extends Map<string, Scene> {
     this.components = new Map<string, any>();
     this.systems = new Map<string, System>();
 
-    this.set("__default__", new Scene(this));
+    this.set("__default__", new Scene(this, undefined, {id: "__default__"}));
+    this.set("__persistent__", new Scene(this, undefined, {id: "__persistent__"}));
   }
 
   async callEvent(evt: string) {
@@ -66,7 +67,7 @@ export class ECS extends Map<string, Scene> {
     return base as EntityStub;
   }
 
-  public async loadScene(name: string, pos?: Identity) {
+  public async loadScene(name: string, pos?: IdentityProps) {
     let sStub = this.sceneStubs.get(name)!;
     let scene = new Scene(this, sStub.systems, pos);
     for (let e in sStub.entities) {
@@ -80,7 +81,9 @@ export class ECS extends Map<string, Scene> {
     return scene;
   }
 
-  async makeEntity(ovr: Identity, stub: EntityStub, scene: Scene) {
+  async makeEntity(ovr: IdentityProps, stub: EntityStub, scene?: Scene) {
+    let persistent = ovr.persistent || (stub.components["identity"] as IdentityProps).persistent;
+    scene = persistent ? this.get("__persistent__")! : scene || this.get("__default__")!;
     let ident = stub.components["identity"] || {} as Identity;
     let lident = <Identity>deepMerge(ident, ovr);
     let entity = scene.makeEntity(lident);

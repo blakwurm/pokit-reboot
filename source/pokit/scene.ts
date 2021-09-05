@@ -1,6 +1,6 @@
 import { ECS, System } from "./ecs.js";
 import { Entity } from "./entity.js";
-import { Identity, Vector } from "./pokit.js";
+import { Identity, IdentityProps, Vector } from "./pokit.js";
 import { deepMergeNoConcat, uuid, VectorOne, VectorZero } from "./utils.js";
 
 export class Scene implements Identity{
@@ -19,7 +19,7 @@ export class Scene implements Identity{
   scale: Vector;
   rotation: number;
 
-  constructor(ecs: ECS, systems?: string[], pos?: Identity) {
+  constructor(ecs: ECS, systems?: string[], pos?: IdentityProps) {
     this.subscriptions = new Map<string, Set<Entity>>();
     this.entities = new Map<string, Entity>();
     this.systems = systems;

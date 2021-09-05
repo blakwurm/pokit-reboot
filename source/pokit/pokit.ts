@@ -33,6 +33,7 @@ export interface Vector {
 export interface Identity {
   id: string;
   parent?: Identity | string;
+  persistent?: boolean;
   bounds: Vector;
   position: Vector;
   z: number;
@@ -42,6 +43,20 @@ export interface Identity {
   globalPosition: Vector;
   globalScale: Vector;
   globalRotation: number;
+}
+export interface IdentityProps {
+  id?: string;
+  parent?: Identity | string;
+  persistent?: boolean;
+  bounds?: Vector;
+  position?: Vector;
+  z?: number;
+  depth?: number;
+  scale?: Vector;
+  rotation?: number;
+  globalPosition?: Vector;
+  globalScale?: Vector;
+  globalRotation?: number;
 }
 export interface IJsonSerializableObject {
 	[index: string] : IJsonTypes,

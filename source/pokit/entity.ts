@@ -1,5 +1,5 @@
 import { IPhysicsState } from "./modules/Physics/physics.js";
-import { Identity, Vector } from "./pokit.js";
+import { Identity, IdentityProps, Vector } from "./pokit.js";
 import { Scene } from "./scene.js";
 import { deepMerge, deepMergeNoConcat, rotateVector, uuid, vectorAdd, vectorDivide, vectorEqual, vectorMultiply, VectorOne, vectorSub, VectorZero } from "./utils.js";
 
@@ -22,7 +22,7 @@ export class Entity extends Map<string, any> implements Identity {
 
   cachedPos?: Vector;
 
-  constructor(ident: Identity, scene: Scene) {
+  constructor(ident: IdentityProps, scene: Scene) {
     super();
 
     this.scene = scene;
