@@ -25,7 +25,7 @@ export default async function init(startOpts?: StartOpts, doOwnSetup: boolean = 
     scene = await engine.ecs.loadScene(manifest.defaultScene);
   }
 
-  let callback = () => engine.start().then(() => { if (scene) engine.ecs.transition(scene) });
+  let callback = () => engine.start().then(() => { if (scene) scene.activate() });
 
   if(doOwnSetup) {
     setup_console_open(callback);

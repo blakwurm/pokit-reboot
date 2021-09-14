@@ -34,8 +34,10 @@ export class Scene implements Identity{
     this.scale = VectorOne();
     this.rotation = 0;
 
-    let o = deepMergeNoConcat(this, pos);
-    Object.assign(this, o);
+    if(pos) {
+      let o = deepMergeNoConcat(this, pos);
+      Object.assign(this, o);
+    }
   }
 
   get globalPosition() {

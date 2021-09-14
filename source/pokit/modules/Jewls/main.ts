@@ -32,8 +32,32 @@ class Jewls {
     globalVars.width = tilesheet.width;
   }
 
+  async updateEntities(entities: Set<Entity>, cb?: (entity: Entity)=>void) {
+    for(let entity of entities) {
+      let sprite = entity.get("sprite");
+      let anim: Vector[] = sprite.animations[sprite.currentAnimation];
+      let coords = vectorAdd(anim[sprite.currentFrame], sprite.source);
+
+      gl.setActorSprite(entity.id, coords.x, coords.y, 0, [1,0,1,1]);
+      gl.translateActor(entity.id, entity.globalPosition.x, entity.globalPosition.y, entity.z);
+      gl.rotateActor(entity.id, -entity.globalRotation);
+      gl.scaleActor(entity.id, entity.globalScale.x, entity.globalScale.y);
+      if(cb)cb(entity);
+    }
+  }
+
+  async updateDebugEntities(entities: Set<Entity>) {
+    await this.updateEntities(entities, (entity: Entity)=>{
+      gl.scaleActor(entity.id, entity.globalScale.x * entity.bounds.x, entity.globalScale.y * entity.bounds.y);
+    });
+  }
+
   @handler()
   async render() {
+    let entities = await this.engine.ecs.getSubscriptions("rendered");
+    let debugEntities = await this.engine.ecs.getSubscriptions("debug");
+    await this.updateEntities(entities);
+    await this.updateDebugEntities(debugEntities);
     gl.render();
   }
 }
@@ -47,14 +71,7 @@ class Renderer {
   }
 
   async update(entity: Entity) {
-    let sprite = entity.get("sprite");
-    let anim: Vector[] = sprite.animations[sprite.currentAnimation];
-    let coords = vectorAdd(anim[sprite.currentFrame], sprite.source);
-
-    gl.setActorSprite(entity.id, coords.x, coords.y, 0, [1,0,1,1]);
-    gl.translateActor(entity.id, entity.globalPosition.x, entity.globalPosition.y, entity.z);
-    gl.rotateActor(entity.id, -entity.globalRotation);
-    gl.scaleActor(entity.id, entity.globalScale.x, entity.globalScale.y);
+    
   }
 
   async destroy(entity: Entity) {
@@ -93,11 +110,6 @@ class Debug extends Renderer {
     gl.createRawTexture(entity.id, 1, 1, new Uint8Array(color))
     gl.createActor(entity.id, entity.id, 1, 1);
     entity.set("sprite", {})
-  }
-
-  async update(entity: Entity) {
-    super.update(entity);
-    gl.scaleActor(entity.id, entity.globalScale.x * entity.bounds.x, entity.globalScale.y * entity.bounds.y);
   }
 
   async destroy(entity: Entity) {

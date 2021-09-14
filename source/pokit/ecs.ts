@@ -47,6 +47,17 @@ export class ECS extends Map<string, Scene> {
     }
   }
 
+  async getSubscriptions(component: string): Promise<Set<Entity>> {
+    let subscriptions = new Set<Entity>();
+    for(let [,scene] of this) {
+      let subs = scene.subscriptions.get(component) || [];
+      for(let entity of subs) {
+        if(!subscriptions.has(entity)) subscriptions.add(entity);
+      }
+    }
+    return subscriptions;
+  }
+
   async resolveLineage(stub: string, cart: CartManifest) {
     let order = [stub]
     let obj = cart.entities[stub];
@@ -82,7 +93,7 @@ export class ECS extends Map<string, Scene> {
   }
 
   async makeEntity(ovr: IdentityProps, stub: EntityStub, scene?: Scene) {
-    let persistent = ovr.persistent || (stub.components["identity"] as IdentityProps).persistent;
+    let persistent = ovr.persistent || (stub.components["identity"] as IdentityProps)?.persistent;
     scene = persistent ? this.get("__persistent__")! : scene || this.get("__default__")!;
     let ident = stub.components["identity"] || {} as Identity;
     let lident = <Identity>deepMerge(ident, ovr);

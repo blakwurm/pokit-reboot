@@ -11,11 +11,6 @@ export default class Physics {
         this.engine = engine;
     }
 
-    @handler()
-    async postUpdate() {
-        this.engine.ecs.scene.entities.forEach(this.updateEntity.bind(this));
-    }
-
     async updateEntity(entity: Entity) {
         const bounds = vectorMultiply(entity.bounds, entity.globalScale);
         
