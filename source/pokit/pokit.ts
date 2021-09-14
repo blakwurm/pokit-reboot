@@ -75,6 +75,7 @@ export class PokitOS {
   ecs: ECS;
   modules: ModLoader;
   canvas: HTMLCanvasElement;
+  dirty: boolean;
 
   constructor(opts?: StartOpts) {
     opts = opts || {};
@@ -82,6 +83,7 @@ export class PokitOS {
     this.ecs = new ECS();
     this.modules = new ModLoader();
     this.canvas = opts?.canvas || document.getElementById("gamescreen") as HTMLCanvasElement;
+    this.dirty = false;
   }
 
   async start() {
@@ -110,9 +112,12 @@ export class PokitOS {
 
   async requestFrame() {
     requestAnimationFrame(async ()=>{
-      await this.modules.callEvent("preRender");
-      await this.modules.callEvent("render");
-      await this.modules.callEvent("postRender");
+      if(this.dirty) {
+        await this.modules.callEvent("preRender");
+        await this.modules.callEvent("render");
+        await this.modules.callEvent("postRender");
+        this.dirty = false;
+      }
       this.requestFrame();
     });
   }
@@ -125,6 +130,7 @@ export class PokitOS {
       this.time.pending -= this.time.interval;
       await this.modules.callEvent("postUpdate");
     }
+    this.dirty = true;
     setTimeout(()=>this.tick(), 0);
   }
 }
