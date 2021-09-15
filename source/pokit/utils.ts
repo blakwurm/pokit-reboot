@@ -126,6 +126,39 @@ export function rad2deg(rad: number) {
   return rad * (180 / Math.PI);
 }
 
+interface TileSource {
+  hflip: boolean;
+  vflip: boolean;
+  ninety: boolean;
+  oneEighty: boolean;
+  index: number;
+}
+
+let hflip = 1 << 31;
+let vflip = 1 << 30;
+let ninety = 1 << 29;
+let oneEighty = 1 << 28;
+
+export function expandNum(i: number): TileSource {
+  return {
+    hflip: (i & hflip) == hflip,
+    vflip: (i & vflip) == vflip,
+    ninety: (i & ninety) == ninety,
+    oneEighty: (i & oneEighty) == oneEighty,
+    index: i<<4>>4
+  }
+}
+
+export function collapseSource(source: TileSource) {
+  let i = source.index;
+  i = source.hflip ? i | hflip : i;
+  i = source.vflip ? i | vflip : i;
+  i = source.ninety ? i | ninety : i;
+  i = source.oneEighty ? i | oneEighty : i;
+  
+  return i;
+}
+
 export default class SpatialHashMap {
   map: Map<string, Identity[]>;
   cellsize: number;
@@ -162,6 +195,10 @@ export default class SpatialHashMap {
       }
     }
     return identities;
+  }
+
+  clear() {
+    this.map.clear();
   }
 
   findColliding(identity: Identity): Identity[] {
