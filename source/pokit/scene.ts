@@ -120,7 +120,7 @@ export class Scene implements Identity{
     }
   }
 
-  async callEventSingle(evt: string, e: Entity, component?: string) {
+  async callEventSingle(evt: string, e: Entity, component?: string, ...args: any[]) {
     let sorted = this.sorted.filter((x)=> {
       return x.defaultComponent==component 
     });
@@ -128,7 +128,7 @@ export class Scene implements Identity{
     let a = component ? e : [e];
     for(let sys of sorted) {
       if(!(<any>sys)[evt]) continue;
-      await (<any>sys)[evt](a);
+      await (<any>sys)[evt](a, ...args);
     }
   }
 
