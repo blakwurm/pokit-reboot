@@ -161,10 +161,12 @@ export function collapseSource(source: TileSource) {
 
 export default class SpatialHashMap {
   map: Map<string, Identity[]>;
+  entities: Map<string,string[]>;
   cellsize: number;
 
   constructor(cellsize: number) {
     this.map = new Map();
+    this.entities = new Map();
     this.cellsize = cellsize;
   }
 
@@ -175,6 +177,7 @@ export default class SpatialHashMap {
       bucket.push(identity);
       this.map.set(key, bucket);
     }
+    this.entities.set(identity.id, spatialKeys);
     return this;
   }
 
@@ -199,6 +202,15 @@ export default class SpatialHashMap {
 
   clear() {
     this.map.clear();
+    this.entities.clear();
+  }
+
+  delete(identity: Identity){
+    for(let [,key] of this.entities.get(identity.id)!) {
+      let arr = this.map.get(key);
+      let i = arr!.indexOf(identity);
+      arr?.splice(i, 1);
+    }
   }
 
   findColliding(identity: Identity): Identity[] {
