@@ -100,7 +100,7 @@ class Physics {
     }
 
     async update(entity: Entity) {
-        let bounds = vectorMultiply(entity.scale,entity.bounds);
+        let bounds = vectorMultiply(entity.globalScale,entity.bounds);
         if(vectorEqual(bounds,this.cachedBounds) &&
         vectorEqual(entity.globalPosition, this.cachedPos)) return;
 
