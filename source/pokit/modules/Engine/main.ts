@@ -42,7 +42,13 @@ class Engine {
       gravity: false,
       density: 9001
     });
-    this.ecs.registerComponent("staticCollider", {});
-    this.ecs.registerComponent("dynamicCollider", {});
+    let collider = {
+      blockNorth: true,
+      blockEast: true,
+      blockSouth: true,
+      blockWest: true
+    }
+    this.ecs.registerComponent("staticCollider", collider);
+    this.ecs.registerComponent("dynamicCollider", collider);
   }
 }

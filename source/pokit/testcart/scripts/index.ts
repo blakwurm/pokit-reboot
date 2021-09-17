@@ -31,14 +31,6 @@ class Move {
     if(this.input!.get("right")) entity.position.x += move.speed;
   }
 
-  async onCollisionEnter() {
-    console.log("enter");
-  }
-
-  async onCollisionExit() {
-    console.log("exit");
-  }
-
   async destroy(entity: Entity) {
     console.log("Goodbye!")
   }

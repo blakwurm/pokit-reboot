@@ -188,10 +188,20 @@ class ColResolution {
     }
 
     async onCollisionEnter(_:Entity,col: Collision) {
+        let collider = col.collider.get("staticCollider") || col.collider.get("dynamicCollider")
+        let map = {
+            "NORTH": "blockSouth",
+            "EAST": "blockWest",
+            "SOUTH": "blockNorth",
+            "WEST": "blockEast"
+        } as Record<string,string>;
         let last = col.agent.get("physicsState").last as Vector;
         let dir = vectorSub(col.agent.globalPosition, last);
         let depth = this.getDepth(col, dir);
         let [normal, direction] = this.getNormal(dir, depth);
+
+        if(!collider[map[direction]]) return;
+
         let resolve = this.getResolution(normal, col);
         col.agent.globalPosition = resolve;
 

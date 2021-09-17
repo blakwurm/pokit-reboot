@@ -5,5 +5,5 @@
   "modules": ["@pokit:Engine","@pokit:Jewls","@pokit:Physics"],
   "scripts": ["index.js"],
   "sceneShards": ["default.json"],
-  "entityShards": ["guy.json", "camera.json", "child.json"]
+  "entityShards": ["guy.json", "camera.json", "wall.json"]
 }
