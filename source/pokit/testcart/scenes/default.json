@@ -1,5 +1,5 @@
 {
-  "systems": ["Move", "Debug", "Camera"],
+  "systems": ["Move", "Debug", "Camera", "Physics"],
   "entities": {
     "guy": [{
       "id": "guy",
@@ -9,10 +9,13 @@
       }
     }],
     "child": [{
-      "parent": "guy",
       "position": {
         "x": 100,
         "y": 0
+      },
+      "scale": {
+        "x": 2,
+        "y": 2
       }
     }],
     "camera": [{
