@@ -1,10 +1,10 @@
-import { system } from "../../ecs";
-import { Entity } from "../../entity";
-import { api, handler, module } from "../../modloader";
-import { PokitOS, Vector } from "../../pokit";
-import SpatialHashMap, { vectorEqual, vectorMultiply, VectorOne } from "../../utils";
+import { system } from "../../ecs.js";
+import { Entity } from "../../entity.js";
+import { api, handler, module } from "../../modloader.js";
+import { PokitOS, Vector } from "../../pokit.js";
+import SpatialHashMap, { vectorEqual, vectorMultiply, VectorOne } from "../../utils.js";
 
-class Collision {
+export class Collision {
     agent: Entity;
     collider: Entity;
     ended: boolean;
