@@ -37,10 +37,12 @@ class Engine {
     this.ecs.registerComponent("camera", {
       isMainCamera: false
     });
-    this.ecs.registerComponent("physics", {
+    this.ecs.registerComponent("rigidBody", {
       collidable: true,
       gravity: false,
       density: 9001
     });
+    this.ecs.registerComponent("staticCollider", {});
+    this.ecs.registerComponent("dynamicCollider", {});
   }
 }
