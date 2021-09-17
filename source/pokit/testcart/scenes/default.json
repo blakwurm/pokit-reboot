@@ -1,5 +1,5 @@
 {
-  "systems": ["Move", "Debug", "Camera", "Physics"],
+  "systems": ["Move", "Debug", "Camera", "Physics", "ColResolution"],
   "entities": {
     "guy": [{
       "id": "guy",

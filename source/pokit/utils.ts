@@ -104,6 +104,20 @@ export function vectorSub(vec1: Vector, vec2: Vector): Vector {
   }
 }
 
+export function vectorSign(vec: Vector): Vector {
+  return {
+    x: Math.sign(vec.x),
+    y: Math.sign(vec.y)
+  }
+}
+
+export function vectorAbs(vec: Vector): Vector {
+  return {
+    x: Math.abs(vec.x),
+    y: Math.abs(vec.y)
+  }
+}
+
 export function VectorOne(): Vector {
   return {
     x: 1,
@@ -111,10 +125,45 @@ export function VectorOne(): Vector {
   }
 }
 
+export function VectorNeg(): Vector {
+  return {
+    x: -1,
+    y: -1
+  }
+}
+
 export function VectorZero(): Vector {
   return {
     x: 0,
     y: 0
+  }
+}
+
+export function VectorNorth() {
+  return {
+    x:0,
+    y:-1
+  }
+}
+
+export function VectorEast() {
+  return {
+    x:1,
+    y:0
+  }
+}
+
+export function VectorSouth() {
+  return {
+    x:0,
+    y:1
+  }
+}
+
+export function VectorWest() {
+  return {
+    x:-1,
+    y:0
   }
 }
 

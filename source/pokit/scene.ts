@@ -133,8 +133,6 @@ export class Scene implements Identity{
       return x.defaultComponent == undefined || this.subscriptions.get(x.defaultComponent)?.has(e);
     });
 
-    //console.trace();
-
     for(let sys of sorted) {
       let a = sys.defaultComponent ? e : [e];
       if(!(<any>sys)[evt]) continue;
