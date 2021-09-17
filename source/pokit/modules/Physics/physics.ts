@@ -101,11 +101,12 @@ class Physics {
 
     async update(entity: Entity) {
         let tbounds = vectorMultiply(entity.globalScale,entity.bounds);
-        let bounds = entity.globalRotation == 90 || entity.globalRotation == 270 ? {
+        let rot = entity.globalRotation;
+        let bounds = (rot > 45 && rot < 135) || (rot > 225 || rot < 315) ? {
             x: tbounds.y,
             y: tbounds.x
         } : tbounds;
-        
+
         if(vectorEqual(bounds,this.cachedBounds) &&
         vectorEqual(entity.globalPosition, this.cachedPos)) return;
 
