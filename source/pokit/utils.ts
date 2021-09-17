@@ -206,7 +206,7 @@ export default class SpatialHashMap {
   }
 
   delete(identity: Identity){
-    for(let [,key] of this.entities.get(identity.id)!) {
+    for(let key of this.entities.get(identity.id)!) {
       let arr = this.map.get(key);
       let i = arr!.indexOf(identity);
       arr?.splice(i, 1);
