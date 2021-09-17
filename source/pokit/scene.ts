@@ -125,8 +125,18 @@ export class Scene implements Identity{
       return x.defaultComponent==component 
     });
 
-    let a = component ? e : [e];
+    this.callEventSingleEntity(evt, e, sorted, ...args);
+  }
+
+  async callEventSingleEntity(evt: string, e: Entity, sorted?: System[], ...args: any[]) {
+    sorted = sorted || this.sorted.filter((x)=>{
+      return x.defaultComponent == undefined || this.subscriptions.get(x.defaultComponent)?.has(e);
+    });
+
+    //console.trace();
+
     for(let sys of sorted) {
+      let a = sys.defaultComponent ? e : [e];
       if(!(<any>sys)[evt]) continue;
       await (<any>sys)[evt](a, ...args);
     }
