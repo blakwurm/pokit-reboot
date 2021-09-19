@@ -160,7 +160,7 @@ class ColResolution {
     }
 
     getNormal(accel: Vector, overlap: Vector): [Vector, string] {
-        if(Math.abs(overlap.x) < Math.abs(overlap.y)) {
+        if(accel.y == 0 || (accel.x != 0 && Math.abs(overlap.x) < Math.abs(overlap.y))) {
             if(accel.x > 0) return [VectorWest(), 'EAST'];
             return [VectorEast(), 'WEST'];
         }
