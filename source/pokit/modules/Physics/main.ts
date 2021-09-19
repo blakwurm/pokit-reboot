@@ -74,8 +74,8 @@ export default class PhysicsModule {
 
         if(!handled) {
             this.collisions.push(col);
-            agent.callEvent("onCollisionEnter", col);
-            collider.callEvent("onCollisionEnter", col);
+            await agent.callEvent("onCollisionEnter", col);
+            await collider.callEvent("onCollisionEnter", col);
         }
     }
 }

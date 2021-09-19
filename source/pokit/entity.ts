@@ -112,7 +112,7 @@ export class Entity extends Map<string, any> implements Identity {
     this.scene.entities.delete(this.id);
   }
 
-  public callEvent(evt: string, ...args: any[]) {
-    this.scene.callEventSingleEntity(evt, this, undefined, ...args)
+  public async callEvent(evt: string, ...args: any[]) {
+    await this.scene.callEventSingleEntity(evt, this, undefined, ...args)
   }
 }
