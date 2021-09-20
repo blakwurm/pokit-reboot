@@ -52,12 +52,20 @@ class Jewls {
     });
   }
 
+  async updateCameras(cameras: Set<Entity>) {
+    for(let camera of cameras) {
+      gl.translateCamera(camera.id, camera.globalPosition.x, camera.globalPosition.y);
+    }
+  }
+
   @handler()
   async render() {
     let entities = await this.engine.ecs.getSubscriptions("rendered");
     let debugEntities = await this.engine.ecs.getSubscriptions("debug");
+    let cameras = await this.engine.ecs.getSubscriptions("camera");
     await this.updateEntities(entities);
     await this.updateDebugEntities(debugEntities);
+    await this.updateCameras(cameras);
     gl.render();
   }
 }
@@ -90,10 +98,6 @@ class Camera {
       return;
     }
     gl.createCamera(entity.id, entity.bounds.x, entity.bounds.y, false, 255, 255, 255, 255);
-  }
-
-  async update(entity: Entity) {
-    gl.translateCamera(entity.id, entity.globalPosition.x, entity.globalPosition.y);
   }
 
   async destroy(entity: Entity) {

@@ -22,4 +22,12 @@ export class InputMod extends Map<string, Number> {
 			this.set(n, 0)
 		}
 	}
+
+	getMany(...args: string[]): number[] {
+		let ret = []
+		for(let key of args) {
+			ret.push(this.get(key));
+		}
+		return ret as number[];
+	}
 }

@@ -2,7 +2,7 @@ import { system } from "../../ecs.js";
 import { Entity } from "../../entity.js";
 import { api, handler, module } from "../../modloader.js";
 import { PokitOS, Vector } from "../../pokit.js";
-import SpatialHashMap, { vectorAbs, vectorAdd, vectorDivide, VectorEast, vectorEqual, vectorMultiply, VectorNorth, VectorOne, vectorSign, VectorSouth, vectorSub, VectorWest, VectorZero } from "../../utils.js";
+import SpatialHashMap, { vectorAbs, vectorAdd, vectorClamp, vectorDist, vectorDivide, VectorEast, vectorEqual, vectorMultiply, VectorNeg, VectorNorth, VectorOne, vectorSign, VectorSouth, vectorSub, VectorWest, VectorZero } from "../../utils.js";
 
 export class Collision {
     agent: Entity;
@@ -121,14 +121,78 @@ class Physics {
     }
 }
 
+function getDepth(col: Collision, accel: Vector): Vector {
+    let dir = vectorSign(accel);
+    dir.x = dir.x != 0 ? dir.x : 1;
+    dir.y = dir.y != 0 ? dir.y : 1;
+    let vec2 = {x:2,y:2};
+    let eBounds = vectorMultiply(col.agent.bounds, col.agent.globalScale);
+    let cBounds = vectorMultiply(col.collider.bounds, col.collider.globalScale);
+    eBounds = vectorDivide(eBounds, vec2);
+    cBounds = vectorDivide(cBounds, vec2);
+    eBounds = vectorMultiply(eBounds, dir);
+    cBounds = vectorMultiply(cBounds, dir);
+    let ePoint = vectorAdd(col.agent.globalPosition, eBounds);
+    let cPoint = vectorSub(col.collider.globalPosition, cBounds);
+    return vectorSub(ePoint, cPoint);
+}
+
+function getNormal(accel: Vector, overlap: Vector): [Vector, string] {
+    if(accel.y == 0 || (accel.x != 0 && Math.abs(overlap.x) < Math.abs(overlap.y))) {
+        if(accel.x > 0) return [VectorWest(), 'EAST'];
+        return [VectorEast(), 'WEST'];
+    }
+    if(accel.y < 0) return [VectorSouth(), 'NORTH'];
+    return [VectorNorth(), 'SOUTH'];
+}
+
+function getResolution(normal: Vector, col: Collision) {
+    let v2 = {x:2,y:2};
+    let eBounds = vectorMultiply(col.agent.bounds, col.agent.globalScale);
+    let cBounds = vectorMultiply(col.collider.bounds, col.collider.globalScale);
+    eBounds = vectorDivide(eBounds, v2);
+    cBounds = vectorDivide(cBounds, v2);
+    let abs = vectorAbs(normal);
+    eBounds = vectorMultiply(eBounds, abs);
+    cBounds = vectorMultiply(cBounds, abs);
+    let offset = vectorAdd(eBounds,cBounds);
+    offset = vectorMultiply(offset, normal);
+    let pos = vectorMultiply(col.collider.globalPosition, abs);
+    pos = vectorAdd(pos, offset); 
+    return {
+        x: pos.x != 0 ? pos.x : col.agent.globalPosition.x,
+        y: pos.y != 0 ? pos.y : col.agent.globalPosition.y
+    }
+}
+
+function handleCollision(vector: Vector, col: Collision) {
+    let collider = col.collider.get("staticCollider") || col.collider.get("dynamicCollider")
+    let map = {
+        "NORTH": "blockSouth",
+        "EAST": "blockWest",
+        "SOUTH": "blockNorth",
+        "WEST": "blockEast"
+    } as Record<string,string>;
+    let depth = getDepth(col, vector);
+    let [normal, direction] = getNormal(vector, depth);
+
+    if(!collider[map[direction]]) return;
+
+    let resolve = getResolution(normal, col);
+    col.agent.globalPosition = resolve;
+
+
+    col.ended = true;
+
+    return resolve;
+}
+
 @system()
 class ColResolution {
     defaultComponent="rigidBody";
-    physics: PhysicsModule;
 
     constructor(engine: PokitOS) {
         engine.ecs.registerComponent("physicsState", {});
-        this.physics = engine.modules.get("Physics");
     }
 
     async init(entity: Entity) {
@@ -143,74 +207,44 @@ class ColResolution {
         state.next = Object.assign({}, entity.globalPosition);
     }
 
-    getDepth(col: Collision, accel: Vector): Vector {
-        let dir = vectorSign(accel);
-        dir.x = dir.x != 0 ? dir.x : 1;
-        dir.y = dir.y != 0 ? dir.y : 1;
-        let vec2 = {x:2,y:2};
-        let eBounds = vectorMultiply(col.agent.bounds, col.agent.globalScale);
-        let cBounds = vectorMultiply(col.collider.bounds, col.collider.globalScale);
-        eBounds = vectorDivide(eBounds, vec2);
-        cBounds = vectorDivide(cBounds, vec2);
-        eBounds = vectorMultiply(eBounds, dir);
-        cBounds = vectorMultiply(cBounds, dir);
-        let ePoint = vectorAdd(col.agent.globalPosition, eBounds);
-        let cPoint = vectorSub(col.collider.globalPosition, cBounds);
-        return vectorSub(ePoint, cPoint);
+    async onCollisionEnter(entity :Entity,col: Collision) {
+        let state = entity.get("physicsState");
+        let last = state.last;
+        let dir = vectorSub(entity.globalPosition, last);
+        state.valid = dir.x !== 0 || dir.y !== 0 ? dir : state.valid;
+        col.agent.get("physicsState").next = handleCollision(state.valid, col);
+    }
+}
+
+let vec = {} as Vector;
+@system()
+class RigidBody {
+    defaultComponent="rigidBody";
+    priority=-Infinity;
+    
+    async update(entity: Entity) {
+        let state = entity.get("rigidBody");
+        state.vector = vectorAdd(state.vector, state.impulse);
+        state.vector.y += state.gravity;
+        state.vector.x -= state.vector.x != 0 ? Math.sign(state.vector.x) * state.friction.x : 0;
+        state.vector.y -= state.vector.y != 0 ? Math.sign(state.vector.y) * state.friction.y : 0;
+        let min = vectorMultiply(state.terminal, VectorNeg());
+        state.vector = vectorClamp(state.vector, min, state.terminal);
+
+        entity.globalPosition = vectorAdd(state.vector, entity.globalPosition);
+        state.impulse = VectorZero();
+        Object.assign(vec, state.vector);
     }
 
-    getNormal(accel: Vector, overlap: Vector): [Vector, string] {
-        if(accel.y == 0 || (accel.x != 0 && Math.abs(overlap.x) < Math.abs(overlap.y))) {
-            if(accel.x > 0) return [VectorWest(), 'EAST'];
-            return [VectorEast(), 'WEST'];
-        }
-        if(accel.y < 0) return [VectorSouth(), 'NORTH'];
-        return [VectorNorth(), 'SOUTH'];
-    }
-
-    getResolution(normal: Vector, col: Collision) {
-        let v2 = {x:2,y:2};
-        let eBounds = vectorMultiply(col.agent.bounds, col.agent.globalScale);
-        let cBounds = vectorMultiply(col.collider.bounds, col.collider.globalScale);
-        eBounds = vectorDivide(eBounds, v2);
-        cBounds = vectorDivide(cBounds, v2);
-        let abs = vectorAbs(normal);
-        eBounds = vectorMultiply(eBounds, abs);
-        cBounds = vectorMultiply(cBounds, abs);
-        let offset = vectorAdd(eBounds,cBounds);
-        offset = vectorMultiply(offset, normal);
-        let pos = vectorMultiply(col.collider.globalPosition, abs);
-        pos = vectorAdd(pos, offset); 
-        return {
-            x: pos.x != 0 ? pos.x : col.agent.globalPosition.x,
-            y: pos.y != 0 ? pos.y : col.agent.globalPosition.y
-        }
-    }
-
-    async onCollisionEnter(_:Entity,col: Collision) {
-        let collider = col.collider.get("staticCollider") || col.collider.get("dynamicCollider")
-        let map = {
-            "NORTH": "blockSouth",
-            "EAST": "blockWest",
-            "SOUTH": "blockNorth",
-            "WEST": "blockEast"
-        } as Record<string,string>;
-        let last = col.agent.get("physicsState").last as Vector;
-        let dir = vectorSub(col.agent.globalPosition, last);
-        let depth = this.getDepth(col, dir);
-        let [normal, direction] = this.getNormal(dir, depth);
-
-        if(!collider[map[direction]]) return;
-
-        let resolve = this.getResolution(normal, col);
-        col.agent.globalPosition = resolve;
-
-        col.agent.get("physicsState").next = resolve;
-
-        col.ended = true;
+    async onCollisionEnter(entity :Entity, col: Collision) {
+        let state = entity.get("rigidBody");
+        state.last = state.vector.x !== 0 || state.vector.y !== 0 ? Object.assign({}, state.vector) : state.last;
+        handleCollision(state.last, col);
     }
 }
 
 export interface IPhysicsState {
     last: Vector;
+    next: Vector;
+    valid: Vector;
 }

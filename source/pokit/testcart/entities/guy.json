@@ -7,6 +7,16 @@
     "debug": {
       "color": [0, 0, 255, 255]
     },
-    "rigidBody": {}
+    "rigidBody": {
+      "gravity": 0,
+      "terminal": {
+        "x": 10,
+        "y": 10
+      },
+      "friction": {
+        "x": 5,
+        "y": 5
+      }
+    }
   }
 }

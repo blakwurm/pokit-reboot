@@ -1,6 +1,7 @@
 import { ECS } from "../../ecs.js";
 import { handler, module } from "../../modloader.js";
 import { PokitOS } from "../../pokit.js";
+import { VectorZero } from "../../utils.js";
 import "./input/input.js"
 import "./input/keyboard.js"
 
@@ -38,9 +39,19 @@ class Engine {
       isMainCamera: false
     });
     this.ecs.registerComponent("rigidBody", {
-      collidable: true,
-      gravity: false,
-      density: 9001
+      resolveCollisions: true,
+      gravity: 5,
+      density: 9001,
+      terminal: {
+        x: 30,
+        y: 40
+      },
+      friction: {
+        x: 5,
+        y: 0
+      },
+      vector: VectorZero(),
+      impulse: VectorZero()
     });
     let collider = {
       blockNorth: true,

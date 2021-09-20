@@ -118,6 +118,24 @@ export function vectorAbs(vec: Vector): Vector {
   }
 }
 
+function clamp(num: number, min: number, max: number) {
+  return Math.max(min, Math.min(num, max));
+}
+
+export function vectorClamp(vec: Vector, min: Vector, max: Vector): Vector {
+  return {
+    x: clamp(vec.x, min.x, max.x),
+    y: clamp(vec.y, min.y, max.y)
+  }
+}
+
+export function vectorDist(vec1: Vector, vec2: Vector) {
+  return Math.sqrt(
+    Math.pow(vec1.x-vec2.x, 2) +
+    Math.pow(vec1.y-vec2.y, 2)
+    )
+}
+
 export function VectorOne(): Vector {
   return {
     x: 1,

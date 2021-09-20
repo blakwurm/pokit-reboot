@@ -1,5 +1,6 @@
 import { system } from "../../ecs.js";
 import { Entity } from "../../entity.js";
+import { InputMod } from "../../modules/Engine/input/input.js";
 import { Identity, PokitOS } from "../../pokit.js";
 
 window.Pokit.ecs.registerComponent("moveable", {
@@ -12,7 +13,7 @@ class Move {
   public priority = 0;
 
   engine: PokitOS;
-  input?: Map<string,number>;
+  input?: InputMod;
 
   constructor(engine: PokitOS) {
     this.engine = engine;
@@ -25,10 +26,13 @@ class Move {
 
   async update(entity: Entity) {
     let move = entity.get("moveable");
-    if(this.input!.get("up")) entity.position.y -= move.speed;
-    if(this.input!.get("down")) entity.position.y += move.speed;
-    if(this.input!.get("left")) entity.position.x -= move.speed;
-    if(this.input!.get("right")) entity.position.x += move.speed;
+    let [left,right,up,down] = this.input!.getMany("left", "right", "up", "down");
+    let state = entity.get("rigidBody");
+
+    state.impulse = {
+      x: (left*-move.speed) + (right*move.speed),
+      y: (up*-move.speed) + (down*move.speed)
+    }
   }
 
   async destroy(entity: Entity) {
