@@ -285,6 +285,7 @@ export default class SpatialHashMap {
 	}
 	getCollider(identity: Identity):ICollider{
     let bounds = vectorMultiply(identity.bounds, identity.globalScale)
+    console.log(identity.id, bounds)
     let pos = identity.globalPosition;
     return {
 			min:{
@@ -333,7 +334,7 @@ export default class SpatialHashMap {
   private makeSpatialKey(identity: Identity): string[] {
     const cs = this.cellsize;
     let { x, y } = identity.globalPosition;
-    let { x: width, y: height } = identity.bounds;
+    let { x: width, y: height } = vectorMultiply(identity.bounds, identity.globalScale);
     let { z, depth } = identity;
 
     let hw = Math.floor((x + (width / 2)) / cs)

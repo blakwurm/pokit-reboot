@@ -165,7 +165,7 @@ function getResolution(normal: Vector, col: Collision) {
     }
 }
 
-function handleCollision(vector: Vector, col: Collision) {
+function handleCollision(vector: Vector, col: Collision): [Vector, string] | undefined {
     let collider = col.collider.get("staticCollider") || col.collider.get("dynamicCollider")
     let map = {
         "NORTH": "blockSouth",
@@ -184,7 +184,7 @@ function handleCollision(vector: Vector, col: Collision) {
 
     col.ended = true;
 
-    return resolve;
+    return [resolve, direction];
 }
 
 @system()
@@ -212,7 +212,8 @@ class ColResolution {
         let last = state.last;
         let dir = vectorSub(entity.globalPosition, last);
         state.valid = dir.x !== 0 || dir.y !== 0 ? dir : state.valid;
-        col.agent.get("physicsState").next = handleCollision(state.valid, col);
+        let ret = handleCollision(state.valid, col);
+        if(ret) state.next = ret[0];
     }
 }
 
@@ -239,7 +240,19 @@ class RigidBody {
     async onCollisionEnter(entity :Entity, col: Collision) {
         let state = entity.get("rigidBody");
         state.last = state.vector.x !== 0 || state.vector.y !== 0 ? Object.assign({}, state.vector) : state.last;
-        handleCollision(state.last, col);
+        let ret = handleCollision(state.last, col);
+        if(!ret) return;
+        let [,dir] = ret;
+        switch(dir) {
+            case "NORTH":
+            case "SOUTH":
+                state.vector.y = 0;
+                break;
+            case "EAST":
+            case "WEST":
+                state.vector.x = 0;
+                break;
+        }
     }
 }
 

@@ -10,8 +10,8 @@
     "rigidBody": {
       "gravity": 0,
       "terminal": {
-        "x": 10,
-        "y": 10
+        "x": 20,
+        "y": 20
       },
       "friction": {
         "x": 5,
