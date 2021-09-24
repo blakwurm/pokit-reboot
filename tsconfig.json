@@ -1,6 +1,6 @@
 {
   "exclude": ["../../templates/**/*", "../../typedefs/**/*"],
-  "include": ["./**/*"],
+  "include": ["./source/pokit/**/*"],
   "compilerOptions": {
     /* Visit https://aka.ms/tsconfig.json to read more about this file */
 
