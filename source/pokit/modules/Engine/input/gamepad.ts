@@ -60,7 +60,7 @@ class GamepadInput {
 	}
 
     @handler()
-    async update() {
+    async preUpdate() {
         
     }
 
