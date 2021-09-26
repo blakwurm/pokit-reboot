@@ -48,7 +48,7 @@ class GamepadMappings extends Map<string, GamepadMapping>  {
                 0: ["right","left"],
                 1: ["down","up"],
             },
-            deadzone: .1,
+            deadzone: .01,
             buttons: {
                 0: "a",
                 1: "b",
