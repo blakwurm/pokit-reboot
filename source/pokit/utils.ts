@@ -118,7 +118,7 @@ export function vectorAbs(vec: Vector): Vector {
   }
 }
 
-function clamp(num: number, min: number, max: number) {
+export function clamp(num: number, min: number, max: number) {
   return Math.max(min, Math.min(num, max));
 }
 

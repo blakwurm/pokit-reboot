@@ -33,6 +33,8 @@ class Move {
       x: (left*-move.speed) + (right*move.speed),
       y: (up*-move.speed) + (down*move.speed)
     }
+
+    if(this.input!.get("x"))console.log("x");
   }
 
   async destroy(entity: Entity) {
