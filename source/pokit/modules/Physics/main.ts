@@ -2,7 +2,7 @@ import { system } from "../../ecs.js";
 import { Entity } from "../../entity.js";
 import { api, handler, module } from "../../modloader.js";
 import { PokitOS, Vector } from "../../pokit.js";
-import SpatialHashMap, { vectorAbs, vectorAdd, vectorClamp, vectorDist, vectorDivide, VectorEast, vectorEqual, vectorMultiply, VectorNeg, VectorNorth, VectorOne, vectorSign, VectorSouth, vectorSub, VectorWest, VectorZero } from "../../utils.js";
+import SpatialHashMap, { bringToZero, vectorAbs, vectorAdd, vectorClamp, vectorDist, vectorDivide, VectorEast, vectorEqual, vectorMultiply, VectorNeg, VectorNorth, VectorOne, vectorSign, VectorSouth, vectorSub, VectorWest, VectorZero } from "../../utils.js";
 
 export class Collision {
     agent: Entity;
@@ -218,6 +218,7 @@ class ColResolution {
 }
 
 let vec = {} as Vector;
+
 @system()
 class RigidBody {
     defaultComponent="rigidBody";
@@ -227,8 +228,8 @@ class RigidBody {
         let state = entity.get("rigidBody");
         state.vector = vectorAdd(state.vector, state.impulse);
         state.vector.y += state.gravity;
-        state.vector.x -= state.vector.x != 0 ? Math.sign(state.vector.x) * state.friction.x : 0;
-        state.vector.y -= state.vector.y != 0 ? Math.sign(state.vector.y) * state.friction.y : 0;
+        state.vector.x = bringToZero(state.vector.x, state.friction.x);
+        state.vector.y = bringToZero(state.vector.y, state.friction.y);
         let min = vectorMultiply(state.terminal, VectorNeg());
         state.vector = vectorClamp(state.vector, min, state.terminal);
 

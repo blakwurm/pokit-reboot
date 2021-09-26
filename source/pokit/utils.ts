@@ -118,6 +118,12 @@ export function vectorAbs(vec: Vector): Vector {
   }
 }
 
+export function bringToZero(num: number, step: number) {
+  let sign = Math.sign(num);
+  let r = num - (sign * step);
+  return Math.sign(r) === sign? r : 0;
+}
+
 export function clamp(num: number, min: number, max: number) {
   return Math.max(min, Math.min(num, max));
 }
