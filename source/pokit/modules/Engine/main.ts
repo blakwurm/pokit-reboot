@@ -4,6 +4,7 @@ import { PokitOS } from "../../pokit.js";
 import { VectorZero } from "../../utils.js";
 import "./input/input.js"
 import "./input/keyboard.js"
+import "./input/gamepad.js"
 
 @module()
 class Engine {
