@@ -35,6 +35,7 @@ export function start_gamepad_subsystem() {
 /* 4 most significant bits of axis/button index are the gamepad selection */
 
 interface GamepadMapping {
+    gamepads?: string[],
     deadzone: number,
     axes: Record<number, [string, string]>;
     hatSwitches: Record<number, string[][]>,
