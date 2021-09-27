@@ -1,6 +1,6 @@
 import { api, handler, module } from "../../../modloader.js";
 import { PokitOS } from "../../../pokit.js";
-import { clamp } from "../../../utils.js";
+import { clamp, expandGpIndex } from "../../../utils.js";
 import { InputMod } from "./input.js";
 
 type GamepadTranslator = (gamepad: Gamepad) => Record<string, number>
@@ -32,11 +32,30 @@ function detect_gamepad_mapping(gamepad: Gamepad) {
 export function start_gamepad_subsystem() {
 }
 
+/* 4 most significant bits of axis/button index are the gamepad selection */
+
 interface GamepadMapping {
     axes: Record<number, [string, string]>;
     deadzone: number,
     buttons: Record<number,string>;
 }
+
+const GAMEPAD_0 = 0 << 28;
+const GAMEPAD_1 = 1 << 28;
+const GAMEPAD_2 = 2 << 28;
+const GAMEPAD_3 = 3 << 28;
+const GAMEPAD_4 = 4 << 28;
+const GAMEPAD_5 = 5 << 28;
+const GAMEPAD_6 = 6 << 28;
+const GAMEPAD_7 = 7 << 28;
+const GAMEPAD_8 = 8 << 28;
+const GAMEPAD_9 = 9 << 28;
+const GAMEPAD_10 = 10 << 28;
+const GAMEPAD_11 = 11 << 28;
+const GAMEPAD_12 = 12 << 28;
+const GAMEPAD_13 = 13 << 28;
+const GAMEPAD_14 = 14 << 28;
+const GAMEPAD_15 = 15 << 28;
 
 @api()
 class GamepadMappings extends Map<string, GamepadMapping>  {
@@ -75,21 +94,21 @@ class GamepadInput {
 	constructor(engine: PokitOS) {
 		this.engine = engine
         this.timestamp = 0;
+        this.activepads = [];
+
         window.addEventListener('gamepadconnected', (e) => {
             console.log(`Gamepad connected.`, e.gamepad)
             let mapid = `${e.gamepad.id} (Index: ${e.gamepad.index})`
             this.gamepads.set(mapid, e.gamepad)
-            this.activepad = mapid;
-            if (this.gamepads.size === 1) {
-                this.activepad = mapid
-            }
+            this.activepads.push(mapid);
         })
 
         window.addEventListener('gamepaddisconnected', (e) => {
             let mapid = `${e.gamepad.id} (Index: ${e.gamepad.index})`
+            let i = this.activepads.indexOf(mapid);
             this.gamepads.delete(mapid)
-            if (this.activepad === mapid) {
-                this.activepad = this.gamepads?.keys()?.next()?.value || undefined
+            if(i != -1) {
+                this.activepads.splice(i,1);
             }
         })
 	}
@@ -98,22 +117,36 @@ class GamepadInput {
 	async postLoad() {
 		this.inputmap = this.engine.modules.get('input');
         this.mappings = this.engine.modules.get('GamepadMappings');
+        this.mapping = this.mappings.get("standard")!;
 	}
+
+    getPad(i: number): [Gamepad, number] {
+        let[gp,index] = expandGpIndex(i);
+        let key = this.activepads[gp];
+        let g = this.gamepads.get(key);
+        return [navigator.getGamepads()[g!.index]!, index];
+    }
+
+    getAxis(i: number) {
+        let [gp,index] = this.getPad(i);
+        return gp.axes[index];
+    }
+    
+    getButton(i: number) {
+        let [gp,index] = this.getPad(i);
+        return gp.buttons[index].value;
+    }
 
     @handler()
     async preUpdate() {
-        let go = this.gamepads.get(this.activepad!);
-        if(!go) return;
-        let g = navigator.getGamepads()![go.index]!;
-        if(g.timestamp === this.timestamp) return;
-        this.timestamp = g.timestamp;
+        if(this.activepads.length < 1) return;
 
         let q: {key: string, value: number}[] = [];
         let o = new Map<string,number>();
-        let m = this.mappings!.get(g.mapping)!;
+        let m = this.mapping!;
 
         for(let [i,[p,n]] of Object.entries(m.axes)){
-            let v = g.axes[parseInt(i)];
+            let v = this.getAxis(parseInt(i));
             v = Math.abs(v) >= m.deadzone ? v : 0;
 
             let pv = clamp(v, 0,1);
@@ -123,7 +156,7 @@ class GamepadInput {
             q.push({key: n, value: nv});
         }
         for(let [i,k] of Object.entries(m.buttons)) {
-            let v = g.buttons[parseInt(i)].value;
+            let v = this.getButton(parseInt(i));
             v = Math.abs(v) >= m.deadzone ? v : 0;
             q.push({key:k, value:v});
         }
@@ -139,8 +172,9 @@ class GamepadInput {
 
 	engine: PokitOS
 	inputmap?: InputMod
-    activepad?: string
+    activepads: string[];
     gamepads = new Map<string, Gamepad>()
+    mapping?: GamepadMapping;
     mappings?: GamepadMappings;
     timestamp: number;
 }

@@ -212,7 +212,7 @@ let vflip = 1 << 30;
 let ninety = 1 << 29;
 let oneEighty = 1 << 28;
 
-export function expandNum(i: number): TileSource {
+export function expandTileNum(i: number): TileSource {
   return {
     hflip: (i & hflip) == hflip,
     vflip: (i & vflip) == vflip,
@@ -222,7 +222,7 @@ export function expandNum(i: number): TileSource {
   }
 }
 
-export function collapseSource(source: TileSource) {
+export function collapseTileSource(source: TileSource) {
   let i = source.index;
   i = source.hflip ? i | hflip : i;
   i = source.vflip ? i | vflip : i;
@@ -230,6 +230,14 @@ export function collapseSource(source: TileSource) {
   i = source.oneEighty ? i | oneEighty : i;
   
   return i;
+}
+
+export function expandGpIndex(i: number) {
+  return [i>>28, i<<4>>4];
+}
+
+export function collapseGpIndex(gp: number, index: number) {
+  return gp << 28 | index;
 }
 
 export default class SpatialHashMap {
