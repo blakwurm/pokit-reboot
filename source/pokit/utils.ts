@@ -291,7 +291,6 @@ export default class SpatialHashMap {
 	}
 	getCollider(identity: Identity):ICollider{
     let bounds = vectorMultiply(identity.bounds, identity.globalScale)
-    console.log(identity.id, bounds)
     let pos = identity.globalPosition;
     return {
 			min:{
