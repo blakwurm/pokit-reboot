@@ -119,7 +119,7 @@ class GamepadInput {
 	async postLoad() {
 		this.inputmap = this.engine.modules.get('input');
         this.mappings = this.engine.modules.get('GamepadMappings');
-        this.mapping = this.mappings.get("standard")!;
+        this.mapping = "standard";
 	}
 
     getPad(i: number): [Gamepad, number] {
@@ -161,7 +161,7 @@ class GamepadInput {
 
         let q: {key: string, value: number}[] = [];
         let o = new Map<string,number>();
-        let m = this.mapping!;
+        let m = this.mappings!.get(this.mapping!)!;
 
         for(let [i,[p,n]] of Object.entries(m.axes)){
             let v = this.getAxis(parseInt(i));
@@ -197,7 +197,7 @@ class GamepadInput {
 	inputmap?: InputMod
     activepads: string[];
     gamepads = new Map<string, Gamepad>()
-    mapping?: GamepadMapping;
+    mapping?: string;
     mappings?: GamepadMappings;
     timestamp: number;
 }
