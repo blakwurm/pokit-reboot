@@ -35,8 +35,9 @@ export function start_gamepad_subsystem() {
 /* 4 most significant bits of axis/button index are the gamepad selection */
 
 interface GamepadMapping {
-    axes: Record<number, [string, string]>;
     deadzone: number,
+    axes: Record<number, [string, string]>;
+    hatSwitches: Record<number, string[][]>,
     buttons: Record<number,string>;
 }
 
@@ -63,11 +64,12 @@ class GamepadMappings extends Map<string, GamepadMapping>  {
         super();
 
         this.set("standard", {
+            deadzone: .01,
             axes: {
                 0: ["right","left"],
                 1: ["down","up"],
             },
-            deadzone: .01,
+            hatSwitches:{},
             buttons: {
                 0: "a",
                 1: "b",
@@ -137,6 +139,22 @@ class GamepadInput {
         return gp.buttons[index].value;
     }
 
+    getHatSwitchQueue(n: number, map: string[][]) {
+        let q: {key:string, value:number}[] = [];
+        let v = -1;
+        if(n != 0 && Math.abs(n) <= 1) {
+            let na = map.length -1;
+            v = Math.round((n+1)/2*na);
+        }
+        for(let i in map) {
+            let value = 0;
+            if(parseInt(i)===v) value = 1;
+            for(let s of map[i]) q.push({key:s, value})
+        }
+
+        return q;
+    }
+
     @handler()
     async preUpdate() {
         if(this.activepads.length < 1) return;
@@ -159,6 +177,11 @@ class GamepadInput {
             let v = this.getButton(parseInt(i));
             v = Math.abs(v) >= m.deadzone ? v : 0;
             q.push({key:k, value:v});
+        }
+        for(let [i,map] of Object.entries(m.hatSwitches)) {
+            let v = this.getAxis(parseInt(i))
+            let arr = this.getHatSwitchQueue(v, map);
+            q.push(...arr);
         }
         for(let e of q) {
             let v = o.get(e.key) || e.value;
