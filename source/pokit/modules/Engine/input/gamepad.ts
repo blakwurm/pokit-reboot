@@ -154,7 +154,11 @@ class GamepadMappings extends Map<string, GamepadMapping>  {
         })
         if(sum != this.timestamp) {
             this.timestamp = sum;
-            this.engine.modules.callEvent("onGamepadInput");
+            let gp = this.gamepads.map((key)=>{
+                let old = gamepadInput.gamepads.get(key)!;
+                return gamepads[old.index];
+            })
+            this.engine.modules.callEvent("onGamepadInput", gp);
             return true;
         }
         return false;
