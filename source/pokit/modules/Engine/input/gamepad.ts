@@ -64,10 +64,13 @@ let gamepadInput: GamepadInput;
 @api()
 class GamepadMappings extends Map<string, GamepadMapping>  {
     gamepads: string[] = [];
+    engine: PokitOS;
     private _mapping = "standard";
     private timestamp = 0;
     constructor(engine: PokitOS){
         super();
+
+        this.engine = engine;
 
         this.set("standard", {
             deadzone: .01,
@@ -95,7 +98,7 @@ class GamepadMappings extends Map<string, GamepadMapping>  {
             }
         });
 
-        this.set("switchpro", {
+        this.set("generic", {
             deadzone: .01,
             axes: {
                 0: ["right","left"],
@@ -121,8 +124,16 @@ class GamepadMappings extends Map<string, GamepadMapping>  {
         })
     }
 
+    override set(name: string, map: GamepadMapping) {
+        super.set(name, map);
+        this.engine.modules.callEvent("onGpMapUpdated", name, map);
+
+        return this;
+    }
+
     setMapping(name: string) {
         this._mapping = name;
+        this.engine.modules.callEvent("onActiveGpMapChanged", name);
     }
 
     get mapping() {
@@ -143,6 +154,7 @@ class GamepadMappings extends Map<string, GamepadMapping>  {
         })
         if(sum != this.timestamp) {
             this.timestamp = sum;
+            this.engine.modules.callEvent("onGamepadInput");
             return true;
         }
         return false;
