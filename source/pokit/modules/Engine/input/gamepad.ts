@@ -141,7 +141,7 @@ class GamepadMappings extends Map<string, GamepadMapping>  {
     }
 
     get connectedGamepads() {
-        return gamepadInput.gamepads.keys();
+        return [...gamepadInput.gamepads.keys()];
     }
 
     get pendingChanges() {
@@ -183,6 +183,8 @@ class GamepadInput {
             this.gamepads.delete(mapid)
             if(i != -1) {
                 this.mappings!.gamepads.splice(i,1);
+                let keys = this.mappings!.connectedGamepads;
+                if(keys.length)this.mappings!.gamepads.push(keys[0]);
             }
         })
 
