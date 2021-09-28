@@ -63,9 +63,9 @@ let gamepadInput: GamepadInput;
 
 @api()
 class GamepadMappings extends Map<string, GamepadMapping>  {
-    gamepads: string[] = [];
     engine: PokitOS;
     private _mapping = "standard";
+    private _gamepads: string[] = [];
     private timestamp = 0;
     constructor(engine: PokitOS){
         super();
@@ -147,7 +147,7 @@ class GamepadMappings extends Map<string, GamepadMapping>  {
     get pendingChanges() {
         let sum = 0;
         let gamepads = navigator.getGamepads();
-        this.gamepads.forEach((x)=>{
+        this._gamepads.forEach((x)=>{
             let gpo = gamepadInput.gamepads.get(x)!;
             let gp = gamepads[gpo.index]!;
             sum += gp.timestamp;
@@ -158,6 +158,20 @@ class GamepadMappings extends Map<string, GamepadMapping>  {
             return true;
         }
         return false;
+    }
+
+    get gamepads() {
+        return [...this._gamepads];
+    }
+
+    set gamepads(value: string[]) {
+        this._gamepads = value;
+        this.engine.modules.callEvent("onActiveGpChanged", this.gamepads);
+        if(value.length) {
+            let gp = gamepadInput.gamepads.get(value[0])!;
+            let map = gp.mapping === "standard" ? "standard" : "generic";
+            this.setMapping(map);
+        }
     }
 }
 
@@ -171,9 +185,7 @@ class GamepadInput {
             let mapid = `${e.gamepad.id} (Index: ${e.gamepad.index})`
             this.gamepads.set(mapid, e.gamepad)
             if(this.mappings!.gamepads.length < 1) {
-                this.mappings!.gamepads.push(mapid);
-                let map = e.gamepad.mapping === "standard" ? "standard" : "generic";
-                this.mappings!.setMapping(map);
+                this.mappings!.gamepads = [mapid];
             }
         })
 
@@ -182,9 +194,18 @@ class GamepadInput {
             let i = this.mappings!.gamepads.indexOf(mapid);
             this.gamepads.delete(mapid)
             if(i != -1) {
-                this.mappings!.gamepads.splice(i,1);
                 let keys = this.mappings!.connectedGamepads;
-                if(keys.length)this.mappings!.gamepads.push(keys[0]);
+                let set = false;
+                let arr = this.mappings!.gamepads;
+                for(let k of keys) {
+                    if(arr.indexOf(k) === -1) {
+                        arr[i] = k;
+                        set = true;
+                        break;
+                    }
+                }
+                if(!set) arr.splice(i, 1);
+                this.mappings!.gamepads = arr;
             }
         })
 
