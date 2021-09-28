@@ -59,8 +59,12 @@ const GAMEPAD_13 = 13 << 28;
 const GAMEPAD_14 = 14 << 28;
 const GAMEPAD_15 = 15 << 28;
 
+let gamepadInput: GamepadInput;
+
 @api()
 class GamepadMappings extends Map<string, GamepadMapping>  {
+    gamepads: string[] = [];
+    private _mapping = "standard";
     constructor(engine: PokitOS){
         super();
 
@@ -89,6 +93,43 @@ class GamepadMappings extends Map<string, GamepadMapping>  {
                 16: "opt"
             }
         });
+
+        this.set("switchpro", {
+            deadzone: .01,
+            axes: {
+                0: ["right","left"],
+                1: ["down","up"],
+            },
+            hatSwitches:{
+                9: [["up"],["up","right"],["right"],["down","right"],["down"],["down","left"],["left"],["up","left"]]
+            },
+            buttons: {
+                0: "x",
+                1: "a",
+                2: "b",
+                3: "y",
+                4: "l",
+                5: "r",
+                6: "l",
+                7: "r",
+                8: "select",
+                9: "start",
+                12: "opt",
+                13: "opt",
+            }
+        })
+    }
+
+    setMapping(name: string) {
+        this._mapping = name;
+    }
+
+    get mapping() {
+        return this.get(this._mapping)!;
+    }
+
+    get connectedGamepads() {
+        return gamepadInput.gamepads.keys;
     }
 }
 
@@ -97,35 +138,34 @@ class GamepadInput {
 	constructor(engine: PokitOS) {
 		this.engine = engine
         this.timestamp = 0;
-        this.activepads = [];
 
         window.addEventListener('gamepadconnected', (e) => {
             console.log(`Gamepad connected.`, e.gamepad)
             let mapid = `${e.gamepad.id} (Index: ${e.gamepad.index})`
             this.gamepads.set(mapid, e.gamepad)
-            this.activepads.push(mapid);
         })
 
         window.addEventListener('gamepaddisconnected', (e) => {
             let mapid = `${e.gamepad.id} (Index: ${e.gamepad.index})`
-            let i = this.activepads.indexOf(mapid);
+            let i = this.mappings!.gamepads.indexOf(mapid);
             this.gamepads.delete(mapid)
             if(i != -1) {
-                this.activepads.splice(i,1);
+                this.mappings!.gamepads.splice(i,1);
             }
         })
+
+        gamepadInput = this;
 	}
 
 	@handler()
 	async postLoad() {
 		this.inputmap = this.engine.modules.get('input');
         this.mappings = this.engine.modules.get('GamepadMappings');
-        this.mapping = "standard";
 	}
 
     getPad(i: number): [Gamepad, number] {
         let[gp,index] = expandGpIndex(i);
-        let key = this.activepads[gp];
+        let key = this.mappings!.gamepads[gp];
         let g = this.gamepads.get(key);
         return [navigator.getGamepads()[g!.index]!, index];
     }
@@ -158,11 +198,11 @@ class GamepadInput {
 
     @handler()
     async preUpdate() {
-        if(this.activepads.length < 1) return;
+        if(this.mappings!.gamepads.length < 1) return;
 
         let q: {key: string, value: number}[] = [];
         let o = new Map<string,number>();
-        let m = this.mappings!.get(this.mapping!)!;
+        let m = this.mappings!.mapping;
 
         for(let [i,[p,n]] of Object.entries(m.axes)){
             let v = this.getAxis(parseInt(i));
@@ -196,9 +236,7 @@ class GamepadInput {
 
 	engine: PokitOS
 	inputmap?: InputMod
-    activepads: string[];
     gamepads = new Map<string, Gamepad>()
-    mapping?: string;
     mappings?: GamepadMappings;
     timestamp: number;
 }
