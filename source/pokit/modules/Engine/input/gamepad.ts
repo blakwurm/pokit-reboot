@@ -170,6 +170,11 @@ class GamepadInput {
             console.log(`Gamepad connected.`, e.gamepad)
             let mapid = `${e.gamepad.id} (Index: ${e.gamepad.index})`
             this.gamepads.set(mapid, e.gamepad)
+            if(this.mappings!.gamepads.length < 1) {
+                this.mappings!.gamepads.push(mapid);
+                let map = e.gamepad.mapping === "standard" ? "standard" : "generic";
+                this.mappings!.setMapping(map);
+            }
         })
 
         window.addEventListener('gamepaddisconnected', (e) => {
