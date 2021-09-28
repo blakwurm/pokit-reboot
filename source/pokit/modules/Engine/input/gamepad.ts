@@ -65,6 +65,7 @@ let gamepadInput: GamepadInput;
 class GamepadMappings extends Map<string, GamepadMapping>  {
     gamepads: string[] = [];
     private _mapping = "standard";
+    private timestamp = 0;
     constructor(engine: PokitOS){
         super();
 
@@ -129,7 +130,22 @@ class GamepadMappings extends Map<string, GamepadMapping>  {
     }
 
     get connectedGamepads() {
-        return gamepadInput.gamepads.keys;
+        return gamepadInput.gamepads.keys();
+    }
+
+    get pendingChanges() {
+        let sum = 0;
+        let gamepads = navigator.getGamepads();
+        this.gamepads.forEach((x)=>{
+            let gpo = gamepadInput.gamepads.get(x)!;
+            let gp = gamepads[gpo.index]!;
+            sum += gp.timestamp;
+        })
+        if(sum != this.timestamp) {
+            this.timestamp = sum;
+            return true;
+        }
+        return false;
     }
 }
 
@@ -137,7 +153,6 @@ class GamepadMappings extends Map<string, GamepadMapping>  {
 class GamepadInput {
 	constructor(engine: PokitOS) {
 		this.engine = engine
-        this.timestamp = 0;
 
         window.addEventListener('gamepadconnected', (e) => {
             console.log(`Gamepad connected.`, e.gamepad)
@@ -199,6 +214,7 @@ class GamepadInput {
     @handler()
     async preUpdate() {
         if(this.mappings!.gamepads.length < 1) return;
+        if(!this.mappings!.pendingChanges) return;
 
         let q: {key: string, value: number}[] = [];
         let o = new Map<string,number>();
@@ -238,5 +254,4 @@ class GamepadInput {
 	inputmap?: InputMod
     gamepads = new Map<string, Gamepad>()
     mappings?: GamepadMappings;
-    timestamp: number;
 }
