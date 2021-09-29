@@ -220,7 +220,9 @@ class GamepadInput {
                 let mapid = `${gamepad.id} (Index: ${gamepad.index})`
                 this.gamepads.set(mapid, gamepad)
                     if(this.mappings!.gamepads.length < 1) {
-                        this.mappings!.gamepads.push(mapid);
+                        let arr = this.mappings!.gamepads;
+                        arr.push(mapid);
+                        this.mappings!.gamepads = arr;
                         let map = gamepad.mapping === "standard" ? "standard" : "generic";
                         this.mappings!.setMapping(map);
                     }
