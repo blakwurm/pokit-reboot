@@ -166,16 +166,13 @@ class GamepadInput {
 	constructor(engine: PokitOS) {
 		this.engine = engine
 
+
+
         window.addEventListener('gamepadconnected', (e) => {
             console.log(`Gamepad connected.`, e.gamepad)
-            let mapid = `${e.gamepad.id} (Index: ${e.gamepad.index})`
-            this.gamepads.set(mapid, e.gamepad)
-            if(this.mappings!.gamepads.length < 1) {
-                this.mappings!.gamepads.push(mapid);
-                let map = e.gamepad.mapping === "standard" ? "standard" : "generic";
-                this.mappings!.setMapping(map);
-            }
+            this.recognize_gamepad(e.gamepad)
         })
+
 
         window.addEventListener('gamepaddisconnected', (e) => {
             let mapid = `${e.gamepad.id} (Index: ${e.gamepad.index})`
@@ -191,10 +188,27 @@ class GamepadInput {
         gamepadInput = this;
 	}
 
+    recognize_gamepad(gamepad: Gamepad | null) {
+            if (gamepad) {
+                let mapid = `${gamepad.id} (Index: ${gamepad.index})`
+                this.gamepads.set(mapid, gamepad)
+                    if(this.mappings!.gamepads.length < 1) {
+                        this.mappings!.gamepads.push(mapid);
+                        let map = gamepad.mapping === "standard" ? "standard" : "generic";
+                        this.mappings!.setMapping(map);
+                    }
+            }
+    }
+
 	@handler()
 	async postLoad() {
 		this.inputmap = this.engine.modules.get('input');
         this.mappings = this.engine.modules.get('GamepadMappings');
+        // Check to see if there are any gamepads in the system post-load
+        let start_gamepads = navigator.getGamepads()
+        for (let gamepad of start_gamepads) {
+            this.recognize_gamepad(gamepad)
+        }
 	}
 
     getPad(i: number): [Gamepad, number] {
