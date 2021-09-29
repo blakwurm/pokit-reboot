@@ -1,12 +1,11 @@
 import { ECS } from "../../ecs.js";
-import { handler, module } from "../../modloader.js";
 import { PokitOS } from "../../pokit.js";
 import { VectorZero } from "../../utils.js";
 import "./input/input.js"
 import "./input/keyboard.js"
 import "./input/gamepad.js"
 
-@module()
+@worker()
 class Engine {
   engine: PokitOS;
   ecs: ECS;

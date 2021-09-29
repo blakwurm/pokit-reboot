@@ -1,7 +1,6 @@
 import { PokitOS, Entity } from '/pokit/pokit';
-import { system } from '/pokit/ecs.js';
 
-window.Pokit.ecs.registerComponent("moveable", {
+Pokit.ecs.registerComponent("moveable", {
   speed: 0
 });
 

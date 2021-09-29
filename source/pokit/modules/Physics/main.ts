@@ -1,6 +1,4 @@
-import { system } from "../../ecs.js";
 import { Entity } from "../../entity.js";
-import { api, handler, module } from "../../modloader.js";
 import { PokitOS, Vector } from "../../pokit.js";
 import SpatialHashMap, { bringToZero, vectorAbs, vectorAdd, vectorClamp, vectorDist, vectorDivide, VectorEast, vectorEqual, vectorMultiply, VectorNeg, VectorNorth, VectorOne, vectorSign, VectorSouth, vectorSub, VectorWest, VectorZero } from "../../utils.js";
 

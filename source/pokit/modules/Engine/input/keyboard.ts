@@ -1,4 +1,3 @@
-import { handler, module } from "../../../modloader.js";
 import { PokitOS } from "../../../pokit.js";
 import { InputMod } from "./input.js";
 
@@ -20,7 +19,7 @@ let keycodeToButton = new Map(
   ]
 )
 
-@module() 
+@worker() 
 class KeyboardInput {
 	constructor(engine: PokitOS) {
 		this.engine = engine

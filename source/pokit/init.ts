@@ -2,8 +2,10 @@ import { PokitOS, StartOpts } from "./pokit.js";
 import { getCartPath, loadCart } from "./cartloader.js";
 import { Scene } from "./scene.js";
 
+import "./decorators.js"
+
 declare global {
-  interface Window { Pokit: PokitOS }
+  var Pokit: PokitOS;
 }
 
 export default async function init(startOpts?: StartOpts, doOwnSetup: boolean = false) {

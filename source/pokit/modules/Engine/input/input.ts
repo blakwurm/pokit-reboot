@@ -1,5 +1,3 @@
-import { api } from "../../../modloader.js";
-
 @api('input')
 export class InputMod extends Map<string, Number> {
 	constructor() {

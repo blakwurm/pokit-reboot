@@ -1,4 +1,3 @@
-import { api, handler, module } from "../../../modloader.js";
 import { PokitOS } from "../../../pokit.js";
 import { clamp, expandGpIndex } from "../../../utils.js";
 import { InputMod } from "./input.js";
@@ -179,7 +178,7 @@ class GamepadMappings extends Map<string, GamepadMapping>  {
     }
 }
 
-@module() 
+@worker() 
 class GamepadInput {
 	constructor(engine: PokitOS) {
 		this.engine = engine

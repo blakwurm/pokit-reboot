@@ -1,7 +1,6 @@
-import { api, handler, module } from "../../modloader.js";
 import { PokitOS } from "../../pokit.js";
 
-@module()
+@worker()
 class Test {
   engine: PokitOS;
 

@@ -1,9 +1,8 @@
-import { system } from "../../ecs.js";
 import { Entity } from "../../entity.js";
 import { InputMod } from "../../modules/Engine/input/input.js";
 import { Identity, PokitOS } from "../../pokit.js";
 
-window.Pokit.ecs.registerComponent("moveable", {
+Pokit.ecs.registerComponent("moveable", {
   speed: 25
 });
 

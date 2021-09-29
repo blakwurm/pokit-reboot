@@ -120,14 +120,3 @@ export class ECS extends Map<string, Scene> {
     }
   }
 }
-
-interface SystemConstructor {
-  new(engine: PokitOS): System;
-}
-
-export function system(name?: string) {
-  return function(ctr: SystemConstructor) {
-    name = name || ctr.name;
-    window.Pokit.ecs.registerSystem(name, new ctr(window.Pokit));
-  }
-}

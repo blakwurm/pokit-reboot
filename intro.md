@@ -143,7 +143,7 @@ Up until now we haven't written any actual code, this is the point at which we s
 Registering components is incredibly simple, you'll just pass into the engine an object with all of the default values for your components. Let's go ahead and create the `moveable` component we saw earlier. To do this we just need to call the `registerComponent` function on our ecs or `Entity Component System` and pass in the component name, and that object we mentioned earlier. If we were developing in standard javascript we would proceed by creating our scripts folder and populating it with our code files, but in our instance we want to utilize a superset of javascript known as typescript. Create a folder called `source` and populate it with one `index.ts` file. Later we will configure typescript to transpile that file into our `scripts` folder as `index.js`. We will put more into this file later but for now all we need to add is as follows.
 
 ```ts
-window.Pokit.ecs.registerComponent("moveable", {
+Pokit.ecs.registerComponent("moveable", {
   speed: 0
 });
 ```
