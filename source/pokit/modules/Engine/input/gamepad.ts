@@ -276,12 +276,12 @@ class GamepadInput {
 
     getAxis(i: number) {
         let [gp,index] = this.getPad(i);
-        return gp.axes[index];
+        return gp.axes[index] || 0;
     }
     
     getButton(i: number) {
         let [gp,index] = this.getPad(i);
-        return gp.buttons[index].value;
+        return gp.buttons[index]?.value || 0;
     }
 
     /**
