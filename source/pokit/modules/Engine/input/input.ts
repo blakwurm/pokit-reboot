@@ -48,6 +48,11 @@ export class InputMod extends Map<string, Number> {
 	}
 
 	@handler()
+	async postLoad() {
+		this.engine.modules.callEvent('onInputMapUpdated', this);
+	}
+
+	@handler()
 	async preUpdate() {
 		if (this.q.length < 1) return;
 		let o = new Map<string,number>();
