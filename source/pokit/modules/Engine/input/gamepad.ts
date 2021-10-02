@@ -41,22 +41,22 @@ export interface GamepadMapping {
     buttons: Record<number,string>;
 }
 
-const GAMEPAD_0 = 0 << 28;
-const GAMEPAD_1 = 1 << 28;
-const GAMEPAD_2 = 2 << 28;
-const GAMEPAD_3 = 3 << 28;
-const GAMEPAD_4 = 4 << 28;
-const GAMEPAD_5 = 5 << 28;
-const GAMEPAD_6 = 6 << 28;
-const GAMEPAD_7 = 7 << 28;
-const GAMEPAD_8 = 8 << 28;
-const GAMEPAD_9 = 9 << 28;
-const GAMEPAD_10 = 10 << 28;
-const GAMEPAD_11 = 11 << 28;
-const GAMEPAD_12 = 12 << 28;
-const GAMEPAD_13 = 13 << 28;
-const GAMEPAD_14 = 14 << 28;
-const GAMEPAD_15 = 15 << 28;
+export const GAMEPAD_0 = 0 << 28;
+export const GAMEPAD_1 = 1 << 28;
+export const GAMEPAD_2 = 2 << 28;
+export const GAMEPAD_3 = 3 << 28;
+export const GAMEPAD_4 = 4 << 28;
+export const GAMEPAD_5 = 5 << 28;
+export const GAMEPAD_6 = 6 << 28;
+export const GAMEPAD_7 = 7 << 28;
+export const GAMEPAD_8 = 8 << 28;
+export const GAMEPAD_9 = 9 << 28;
+export const GAMEPAD_10 = 10 << 28;
+export const GAMEPAD_11 = 11 << 28;
+export const GAMEPAD_12 = 12 << 28;
+export const GAMEPAD_13 = 13 << 28;
+export const GAMEPAD_14 = 14 << 28;
+export const GAMEPAD_15 = 15 << 28;
 
 let gamepadInput: GamepadInput;
 
