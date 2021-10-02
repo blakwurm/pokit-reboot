@@ -1,11 +1,15 @@
+import { PokitOS } from "../../../pokit";
+
 export type InputRecord = {key:string, value:number};
 @api('input')
 export class InputMod extends Map<string, Number> {
 
 	q: InputRecord[]
+	engine: PokitOS
 
-	constructor() {
+	constructor(engine: PokitOS) {
 		super()
+		this.engine = engine
 		for (let n of [
 			'up',
 			'down',
@@ -45,6 +49,7 @@ export class InputMod extends Map<string, Number> {
 
 	@handler()
 	async preUpdate() {
+		if (this.q.length < 1) return;
 		let o = new Map<string,number>();
 		while(this.q.length) {
 			let e = this.q.pop()!;
@@ -54,5 +59,6 @@ export class InputMod extends Map<string, Number> {
 		for(let [k,v] of o) {
 			this.set(k, v);
 		}
+		this.engine.modules.callEvent('onInputMapUpdated', this);
 	}
 }
