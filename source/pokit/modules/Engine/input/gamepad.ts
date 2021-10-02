@@ -33,7 +33,7 @@ export function start_gamepad_subsystem() {
 
 /* 4 most significant bits of axis/button index are the gamepad selection */
 
-interface GamepadMapping {
+export interface GamepadMapping {
     gamepads?: string[],
     deadzone: number,
     axes: Record<number, [string, string]>;
@@ -61,7 +61,7 @@ const GAMEPAD_15 = 15 << 28;
 let gamepadInput: GamepadInput;
 
 @api()
-class GamepadMappings extends Map<string, GamepadMapping>  {
+export class GamepadMappings extends Map<string, GamepadMapping>  {
     engine: PokitOS;
     private _mapping = "standard";
     private _gamepads: string[] = [];
@@ -121,6 +121,8 @@ class GamepadMappings extends Map<string, GamepadMapping>  {
                 13: "opt",
             }
         })
+
+        this.set('switch_pro', this.get('generic')!)
     }
 
     override set(name: string, map: GamepadMapping) {
@@ -137,6 +139,10 @@ class GamepadMappings extends Map<string, GamepadMapping>  {
 
     get mapping() {
         return this.get(this._mapping)!;
+    }
+
+    get mappingName() {
+        return this._mapping;
     }
 
     get connectedGamepads() {
