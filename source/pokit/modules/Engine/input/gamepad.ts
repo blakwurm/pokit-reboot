@@ -70,7 +70,7 @@ export interface GpInfo {
 
 export function getGpInfo(controllerID: string): GpInfo {
     // https://regex101.com/r/wey9T8/1
-    let reg: RegExp = /(?<title>.*?(?= \()) \((?:STANDARD GAMEPAD )*Vendor: (?<vendor>[a-zA-Z0-9]+) Product: (?<product>[a-zA-Z0-9]+)\) \(Index: (?<index>[0-9+])\)/
+    let reg = /(?<title>.*?(?= \()) \((?:.*?(?=Vendor:|\)))(?:Vendor: (?<vendor>[a-zA-Z0-9]+))?(?: Product: (?<product>[a-zA-Z0-9]+))?\) \(Index: (?<index>[0-9+])\)/
     let thing = (reg.exec(controllerID) as any)
     let groups = thing.groups
     groups.index = parseInt(groups.index)
