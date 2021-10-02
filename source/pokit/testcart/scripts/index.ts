@@ -1,4 +1,5 @@
 import { Entity } from "../../entity.js";
+import { Logger, PokitDebug } from "../../modules/Debug/main.js";
 import { InputMod } from "../../modules/Engine/input/input.js";
 import { Identity, PokitOS } from "../../pokit.js";
 
@@ -13,6 +14,7 @@ class Move {
 
   engine: PokitOS;
   input?: InputMod;
+  logger?: Logger;
 
   constructor(engine: PokitOS) {
     this.engine = engine;
@@ -21,6 +23,7 @@ class Move {
   async init(entity: Entity) {
     console.log("Init!");
     this.input = this.engine.modules.get("input");
+    this.logger = (this.engine.modules.get("Debug") as PokitDebug).makeLogger();
   }
 
   async update(entity: Entity) {
@@ -33,7 +36,7 @@ class Move {
       y: (up*-move.speed) + (down*move.speed)
     }
 
-    if(this.input!.get("x"))console.log("x");
+    if(this.input!.get("x"))this.logger!.Info("x");
   }
 
   async destroy(entity: Entity) {
