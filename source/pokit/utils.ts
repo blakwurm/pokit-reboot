@@ -52,6 +52,23 @@ export function deepMergeNoConcat(o: any, ...arr: any[]) {
   return ret;
 }
 
+export function deepClone(o: any): any {
+  if(Array.isArray(o)) {
+    let r = [];
+    for(let v of o) {
+      if(typeof v === "object") r.push(deepClone(v));
+      else r.push(v);
+    }
+    return r;
+  }
+  let r = {} as any;
+  for(let [k,v] of Object.entries(o)) {
+    if(typeof v === "object") r[k] = deepClone(v);
+    else r[k] = v;
+  }
+  return r;
+}
+
 export function uuid() {
   var dt = new Date().getTime();
   var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
