@@ -40,14 +40,14 @@ class KeyboardInput {
 	handleKeyDown(keyevent: KeyboardEvent) {
 		let button = keycodeToButton.get(keyevent.code)
 		if (button) {
-			this.inputmap!.set(button, 1)
+			this.inputmap!.push({key:button,value:1})
 		}
 	}
 
 	handleKeyUp(keyevent: KeyboardEvent) {
 		let button = keycodeToButton.get(keyevent.code)
 		if (button) {
-			this.inputmap!.set(button, 0)
+			this.inputmap!.push({key:button, value:0})
 		}
 	}
 

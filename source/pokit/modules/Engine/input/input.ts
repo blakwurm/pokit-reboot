@@ -1,5 +1,9 @@
+export type InputRecord = {key:string, value:number};
 @api('input')
 export class InputMod extends Map<string, Number> {
+
+	q: InputRecord[]
+
 	constructor() {
 		super()
 		for (let n of [
@@ -19,6 +23,8 @@ export class InputMod extends Map<string, Number> {
 		]) {
 			this.set(n, 0)
 		}
+
+		this.q = [];
 	}
 
 	getMany(...args: string[]): number[] {
@@ -27,5 +33,22 @@ export class InputMod extends Map<string, Number> {
 			ret.push(this.get(key));
 		}
 		return ret as number[];
+	}
+
+	push(...o: InputRecord[]) {
+		this.q.push(...o);
+	}
+
+	@handler()
+	async preUpdate() {
+		let o = new Map<string,number>();
+		while(this.q.length) {
+			let e = this.q.pop()!;
+			let v = o.get(e.key) || e.value;
+			if(e.value >= v) o.set(e.key, e.value);
+		}
+		for(let [k,v] of o) {
+			this.set(k, v);
+		}
 	}
 }

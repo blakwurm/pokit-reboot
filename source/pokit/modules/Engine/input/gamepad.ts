@@ -332,12 +332,10 @@ class GamepadInput {
     }
 
     @handler()
-    async preUpdate() {
+    async input() {
         if(this.mappings!.gamepads.length < 1) return;
         if(!this.mappings!.pendingChanges) return;
 
-        let q: {key: string, value: number}[] = [];
-        let o = new Map<string,number>();
         let m = this.mappings!.mapping;
 
         for(let [i,[p,n]] of Object.entries(m.axes)){
@@ -347,25 +345,18 @@ class GamepadInput {
             let pv = clamp(v, 0,1);
             let nv = -clamp(v, -1, 0);
 
-            q.push({key: p, value: pv});
-            q.push({key: n, value: nv});
+            this.inputmap!.push({key: p, value: pv});
+            this.inputmap!.push({key: n, value: nv});
         }
         for(let [i,k] of Object.entries(m.buttons)) {
             let v = this.getButton(parseInt(i));
             v = Math.abs(v) >= m.deadzone ? v : 0;
-            q.push({key:k, value:v});
+            this.inputmap!.push({key:k, value:v});
         }
         for(let [i,map] of Object.entries(m.hatSwitches)) {
             let v = this.getAxis(parseInt(i))
             let arr = this.getHatSwitchQueue(v, map);
-            q.push(...arr);
-        }
-        for(let e of q) {
-            let v = o.get(e.key) || e.value;
-            if(e.value >= v) o.set(e.key, e.value);
-        }
-        for(let [k,v] of o) {
-            this.inputmap!.set(k, v);
+            this.inputmap!.push(...arr);
         }
     }
 
