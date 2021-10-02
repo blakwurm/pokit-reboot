@@ -256,19 +256,50 @@ class GamepadInput {
         return gp.buttons[index].value;
     }
 
+    /**
+     * 
+     * @param n actual input value
+     * @param map what convrted input values should be mapped to
+     * @returns ur mom
+     */
     getHatSwitchQueue(n: number, map: string[][]) {
+        // Get some shit, for some fucking reason idk
+        // I guess it's a vector?
+        // Jordan: Yeah, I just removed all the silent letters from 'queue'
+        // Alex: but... it's an array, not a queue
+        // Jordan: I..... <facepalm> learn to javascript noob
         let q: {key:string, value:number}[] = [];
+        // Yeah because -1 is better then 0
+        // But no fr the value starts at -1, not -1, not 43. -1
         let v = -1;
+        // This is a loop.
+        // haha j/k
+        // It's an if statement. If n is within bounds, do shit
         if(n != 0 && Math.abs(n) <= 1) {
+            // na na naaaa naaaaa
+            // heeey heeey heeeeeeeeeeeeeeeeeeeeeeeeeeey
+            // get map.leeeeeength
             let na = map.length -1;
+            // If you don't know what Math.round does by now
+            // I'm afraid there's no hope for you
             v = Math.round((n+1)/2*na);
+            // But like fr, we get it this way so that the -1 to 1 value gets converted
+            // into ints between 0 and n
         }
+        // NOOOOOOW it's a loop
         for(let i in map) {
+            // omg seriously? we set a value to 0. You know this... right?
             let value = 0;
+            // parseInt is obvious, but what *isn't* obvious is that we do it because
+            // javascript is FUCKING DUMB and converts a number into a string
+            // when you use it as a key in an object. Yeah. So stick *that* in your
+            // bong and blow it up your ass!
             if(parseInt(i)===v) value = 1;
+            // Just serialize the values
             for(let s of map[i]) q.push({key:s, value})
         }
 
+        // I wonder what the fuck this could be
         return q;
     }
 
