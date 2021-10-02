@@ -188,6 +188,7 @@ class GamepadInput {
         window.addEventListener('gamepadconnected', (e) => {
             console.log(`Gamepad connected.`, e.gamepad)
             this.recognize_gamepad(e.gamepad)
+            // make engine event
         })
 
 
@@ -209,6 +210,7 @@ class GamepadInput {
                 if(!set) arr.splice(i, 1);
                 this.mappings!.gamepads = arr;
             }
+            this.engine.modules.callEvent('onGpDisconnected', mapid)
         })
 
         gamepadInput = this;
@@ -218,13 +220,14 @@ class GamepadInput {
             if (gamepad) {
                 let mapid = `${gamepad.id} (Index: ${gamepad.index})`
                 this.gamepads.set(mapid, gamepad)
-                    if(this.mappings!.gamepads.length < 1) {
-                        let arr = this.mappings!.gamepads;
-                        arr.push(mapid);
-                        this.mappings!.gamepads = arr;
-                        let map = gamepad.mapping === "standard" ? "standard" : "generic";
-                        this.mappings!.setMapping(map);
-                    }
+                if(this.mappings!.gamepads.length < 1) {
+                    let arr = this.mappings!.gamepads;
+                    arr.push(mapid);
+                    this.mappings!.gamepads = arr;
+                    let map = gamepad.mapping === "standard" ? "standard" : "generic";
+                    this.mappings!.setMapping(map);
+                }
+                this.engine.modules.callEvent('onGpConnected', mapid)
             }
     }
 
