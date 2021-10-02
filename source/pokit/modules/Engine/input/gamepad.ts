@@ -60,6 +60,24 @@ export const GAMEPAD_15 = 15 << 28;
 
 let gamepadInput: GamepadInput;
 
+export interface GpInfo {
+  title: string
+  index: number
+  vendor: string
+  product: string
+  id: string
+}
+
+export function getGpInfo(controllerID: string): GpInfo {
+    // https://regex101.com/r/wey9T8/1
+    let reg: RegExp = /(?<title>.*?(?= \()) \((?:STANDARD GAMEPAD )*Vendor: (?<vendor>[a-zA-Z0-9]+) Product: (?<product>[a-zA-Z0-9]+)\) \(Index: (?<index>[0-9+])\)/
+    let thing = (reg.exec(controllerID) as any)
+    let groups = thing.groups
+    groups.index = parseInt(groups.index)
+    groups.id = controllerID
+    return groups
+}
+
 @api()
 export class GamepadMappings extends Map<string, GamepadMapping>  {
     engine: PokitOS;
@@ -182,6 +200,7 @@ export class GamepadMappings extends Map<string, GamepadMapping>  {
             this.setMapping(map);
         }
     }
+    getGpInfo = getGpInfo
 }
 
 @worker() 
