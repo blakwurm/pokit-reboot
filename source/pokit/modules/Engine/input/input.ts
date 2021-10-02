@@ -49,6 +49,7 @@ export class InputMod extends Map<string, Number> {
 
 	@handler()
 	async postLoad() {
+		console.log('first time updating baby')
 		this.engine.modules.callEvent('onInputMapUpdated', this);
 	}
 

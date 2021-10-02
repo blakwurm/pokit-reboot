@@ -204,6 +204,21 @@ export class GamepadMappings extends Map<string, GamepadMapping>  {
         let thing = this.get(name)
         let other = deepClone(thing)
         this.set(newname, other)
+        this.setMapping(newname)
+    }
+
+    makeEmptyMapping(name: string) {
+        let foo = {
+            deadzone: .01,
+            axes: {
+            },
+            hatSwitches:{
+            },
+            buttons: {
+            }
+        }
+        this.set(name, foo)
+        this.setMapping(name)
     }
     getGpInfo = getGpInfo
 }
