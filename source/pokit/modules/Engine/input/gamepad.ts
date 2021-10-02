@@ -1,5 +1,5 @@
 import { PokitOS } from "../../../pokit.js";
-import { clamp, expandGpIndex } from "../../../utils.js";
+import { clamp, deepClone, expandGpIndex } from "../../../utils.js";
 import { InputMod } from "./input.js";
 
 type GamepadTranslator = (gamepad: Gamepad) => Record<string, number>
@@ -199,6 +199,11 @@ export class GamepadMappings extends Map<string, GamepadMapping>  {
             let map = gp.mapping === "standard" ? "standard" : "generic";
             this.setMapping(map);
         }
+    }
+    clone(name: string, newname: string) {
+        let thing = this.get(name)
+        let other = deepClone(thing)
+        this.set(newname, other)
     }
     getGpInfo = getGpInfo
 }
