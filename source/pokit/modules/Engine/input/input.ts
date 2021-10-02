@@ -39,6 +39,10 @@ export class InputMod extends Map<string, Number> {
 		this.q.push(...o);
 	}
 
+	pushAction(key: string, value: number) {
+		this.q.push({key,value})
+	}
+
 	@handler()
 	async preUpdate() {
 		let o = new Map<string,number>();
