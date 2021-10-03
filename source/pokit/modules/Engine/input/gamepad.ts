@@ -193,11 +193,16 @@ export class GamepadMappings extends Map<string, GamepadMapping>  {
 
     set gamepads(value: string[]) {
         this._gamepads = value;
-        this.engine.modules.callEvent("onActiveGpChanged", this.gamepads);
-        if(value.length) {
-            let gp = gamepadInput.gamepads.get(value[0])!;
-            let map = gp.mapping === "standard" ? "standard" : "generic";
-            this.setMapping(map);
+        let gp = gamepadInput.gamepads.get(value[0])!;
+        let map = gp.mapping === "standard" ? "standard" : "generic";
+        let obj = {
+            recommendedMapping: map,
+            autoMap: true
+        }
+        this.engine.modules.callEvent("onActiveGpChanged", this.gamepads, obj);
+        console.log(obj);
+        if(value.length && obj.autoMap) {
+            this.setMapping(obj.recommendedMapping);
         }
     }
     clone(name: string, newname: string) {
@@ -272,8 +277,6 @@ class GamepadInput {
                     let arr = this.mappings!.gamepads;
                     arr.push(mapid);
                     this.mappings!.gamepads = arr;
-                    let map = gamepad.mapping === "standard" ? "standard" : "generic";
-                    this.mappings!.setMapping(map);
                 }
                 this.engine.modules.callEvent('onGpConnected', mapid)
             }
