@@ -231,7 +231,6 @@ class GamepadInput {
 
 
         window.addEventListener('gamepadconnected', (e) => {
-            console.log(`Gamepad connected.`, e.gamepad)
             this.recognize_gamepad(e.gamepad)
             // make engine event
         })
