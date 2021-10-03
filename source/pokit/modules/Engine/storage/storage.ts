@@ -22,6 +22,7 @@ export class Settings {
             list: ()=>{
                 let arr: string[] = []
                 this.engine.modules.callEvent('querySettings', ns, arr);
+                return arr;
             }
         }
     }
