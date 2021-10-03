@@ -18,6 +18,10 @@ export class Settings {
             },
             set: (name: string, value: IJsonTypes) => {
                 this.engine.modules.callEvent('saveSetting', ns + name, value);
+            },
+            list: ()=>{
+                let arr: string[] = []
+                this.engine.modules.callEvent('querySettings', ns, arr);
             }
         }
     }
