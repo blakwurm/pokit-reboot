@@ -1,7 +1,7 @@
 import { IJsonTypes, PokitOS } from "../../../pokit"
 
 @api()
-class Settings {
+export class Settings {
     engine: PokitOS
 
     constructor(engine:PokitOS) {

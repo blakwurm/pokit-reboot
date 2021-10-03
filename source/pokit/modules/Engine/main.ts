@@ -1,9 +1,10 @@
 import { ECS } from "../../ecs.js";
 import { PokitOS } from "../../pokit.js";
 import { VectorZero } from "../../utils.js";
-import "./input/input.js"
-import "./input/keyboard.js"
-import "./input/gamepad.js"
+import "./input/input.js";
+import "./input/keyboard.js";
+import "./input/gamepad.js";
+import "./storage/storage.js";
 
 @worker()
 class Engine {

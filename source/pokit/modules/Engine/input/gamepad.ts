@@ -201,13 +201,17 @@ export class GamepadMappings extends Map<string, GamepadMapping>  {
         }
     }
     clone(name: string, newname: string) {
-        let thing = this.get(name)
-        let other = deepClone(thing)
-        this.set(newname, other)
-        this.setMapping(newname)
+        let thing = this.get(name);
+        let other = deepClone(thing);
+        this.set(newname, other);
+        this.setMapping(newname);
     }
 
     makeEmptyMapping(name: string) {
+        if (this.get(name)) {
+            this.setMapping(name);
+            return;
+        }
         let foo = {
             deadzone: .01,
             axes: {
@@ -217,10 +221,10 @@ export class GamepadMappings extends Map<string, GamepadMapping>  {
             buttons: {
             }
         }
-        this.set(name, foo)
-        this.setMapping(name)
+        this.set(name, foo);
+        this.setMapping(name);
     }
-    getGpInfo = getGpInfo
+    getGpInfo = getGpInfo;
 }
 
 @worker() 
