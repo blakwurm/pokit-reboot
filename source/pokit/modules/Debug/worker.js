@@ -5,7 +5,7 @@ self.addEventListener('message', (e) => {
 let log = () => {
     let msg = q.pop();
     if (msg) {
-        console.log(`[${msg.level.toString()}]`, ...msg.content, `${msg.url}:${msg.line}:${msg.column}`);
+        console.log(`[${msg.level.toString()}]`, ...msg.content, `(${msg.url}:${msg.line}:${msg.column})`);
     }
     setTimeout(log, 0);
 };

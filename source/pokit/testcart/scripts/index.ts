@@ -16,6 +16,8 @@ class Move {
   input?: InputMod;
   logger?: Logger;
 
+  once = true
+
   constructor(engine: PokitOS) {
     this.engine = engine;
   }
@@ -27,6 +29,10 @@ class Move {
   }
 
   async update(entity: Entity) {
+    if(this.once) {
+      this.once = false;
+      for(let i = 0; i < 1000; i++) this.logger?.Info("Spam!");
+    }
     let move = entity.get("moveable");
     let [left,right,up,down] = this.input!.getMany("left", "right", "up", "down");
     let state = entity.get("rigidBody");
