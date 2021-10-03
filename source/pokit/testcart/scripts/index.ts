@@ -16,7 +16,7 @@ class Move {
   input?: InputMod;
   logger?: Logger;
 
-  once = true
+  once = false; 
 
   constructor(engine: PokitOS) {
     this.engine = engine;
