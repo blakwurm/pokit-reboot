@@ -23,6 +23,8 @@ let keycodeToButton = new Map(
   ]
 )
 
+let currentPresses: string[] = [];
+
 @worker() 
 class KeyboardInput {
 	constructor(engine: PokitOS) {
@@ -39,8 +41,9 @@ class KeyboardInput {
 
 	handleKeyDown(keyevent: KeyboardEvent) {
 		let button = keycodeToButton.get(keyevent.code)
-		if (button) {
+		if (button && currentPresses.indexOf(button) < 0) {
 			this.inputmap!.push({key:button,value:1})
+			currentPresses.push(button);
 		}
 	}
 
@@ -48,6 +51,7 @@ class KeyboardInput {
 		let button = keycodeToButton.get(keyevent.code)
 		if (button) {
 			this.inputmap!.push({key:button, value:0})
+			currentPresses.splice(currentPresses.indexOf(button), 1)
 		}
 	}
 
