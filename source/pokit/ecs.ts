@@ -63,7 +63,7 @@ export class ECS extends Map<string, Scene> {
     let obj = cart.entities[stub];
 
     for(let inherit of obj.inherits){
-      order.concat(...await this.resolveLineage(inherit, cart))
+      order.push(...await this.resolveLineage(inherit, cart))
     }
 
     return order;
