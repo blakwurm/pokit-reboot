@@ -30,24 +30,24 @@ class Jewls {
     globalVars.width = tilesheet.width;
   }
 
-  async updateEntities(entities: Set<Entity>, cb?: (entity: Entity)=>void) {
+  async updateEntities(entities: Set<Entity>, debug?: boolean) {
     for(let entity of entities) {
-      let sprite = entity.get("sprite");
-      let anim: Vector[] = sprite.animations[sprite.currentAnimation];
-      let coords = vectorAdd(anim[sprite.currentFrame], sprite.source);
-
-      gl.setActorSprite(entity.id, coords.x, coords.y, 0, [1,0,1,1]);
       gl.translateActor(entity.id, entity.globalPosition.x, entity.globalPosition.y, entity.z);
       gl.rotateActor(entity.id, -entity.globalRotation);
-      gl.scaleActor(entity.id, entity.globalScale.x, entity.globalScale.y);
-      if(cb)cb(entity);
+      if(debug) gl.scaleActor(entity.id, entity.globalScale.x * entity.bounds.x, entity.globalScale.y * entity.bounds.y)
+      else {
+        gl.scaleActor(entity.id, entity.globalScale.x, entity.globalScale.y);
+        let sprite = entity.get("sprite");
+        let anim: Vector[] = sprite.animations[sprite.currentAnimation];
+        let coords = vectorAdd(anim[sprite.currentFrame], sprite.source);
+
+        gl.setActorSprite(entity.id, coords.x, coords.y, 0, [1,0,1,1]);
+      }
     }
   }
 
   async updateDebugEntities(entities: Set<Entity>) {
-    await this.updateEntities(entities, (entity: Entity)=>{
-      gl.scaleActor(entity.id, entity.globalScale.x * entity.bounds.x, entity.globalScale.y * entity.bounds.y);
-    });
+    await this.updateEntities(entities, true);
   }
 
   async updateCameras(cameras: Set<Entity>) {
