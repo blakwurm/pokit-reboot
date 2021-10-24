@@ -98,9 +98,19 @@ export class ECS extends Map<string, Scene> {
     let ident = stub.components["identity"] || {} as Identity;
     let lident = <Identity>deepMerge(ident, ovr);
     let entity = scene.makeEntity(lident);
+    if(stub.children) await this.makeChildren(entity, stub, scene);
     for(let c in stub.components) {
       if(c == 'identity') continue;
       entity.set(c, stub.components[c]);
+    }
+  }
+
+  async makeChildren(e: Entity, stub: EntityStub, scene: Scene) {
+    for(let [s,instances] of Object.entries(stub.children!)) {
+      for(let instance of instances) {
+        instance.parent = e.id;
+        await this.makeEntity(instance, this.entityStubs.get(s)!, scene);
+      }
     }
   }
 

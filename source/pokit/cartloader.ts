@@ -20,6 +20,7 @@ export interface SceneStub {
 export interface EntityStub {
   inherits: string[];
   components: IJsonSerializableObject;
+  children?: { [stub:string]: Identity[] };
 }
 
 export function getCartPath() {
